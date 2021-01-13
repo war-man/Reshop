@@ -1,0 +1,47 @@
+﻿@model Product
+
+
+
+<div class="card mt-2">
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-5 col-xl-5">
+            <div class="card-body">
+                <img src="/images/@(Model.Id).jpg" style="max-width: 250px; border: 1px solid gray; padding: 3px" />
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-6 col-lg-7 col-xl-7">
+
+            <div class="card-body">
+                ایدی محصول : <b>@Model.Id</b>
+            </div>
+            <div class="card-body">
+                نام محصول : <b>@Model.Name</b>
+            </div>
+
+            <div class="card-body">
+                قیمت محصول : <b>@Model.Item.Price</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer row">
+
+        <form asp-action="DeleteProduct" asp-route-productId="@Model.Id" method="post">
+            <button onclick="return confirm('ایا از حذف محصول مطمئن هستید')" type="submit" class="btn btn-danger">
+                حذف
+            </button>
+        </form>
+
+        <a asp-action="EditProduct" asp-route-productId="@Model.Id"
+           class="btn btn-primary">
+            ویرایش
+        </a>
+
+        <a asp-action="AddCategoryToProductCategories" asp-route-productId="@Model.Id"
+           class="btn btn-primary">
+            افزودن به گروه
+        </a>
+
+    </div>
+</div>

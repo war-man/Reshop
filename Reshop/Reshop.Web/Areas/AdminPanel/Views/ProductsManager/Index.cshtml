@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="text-center">
+    <h1>لیست کالاها</h1>
+</div>
+<hr />
+
+<div>
+    <a asp-action="AddProduct" class="btn btn-primary">افزودن کالا</a>
+
+    @*<div class="mt-3">
+        <form class="form-inline my-2 my-lg-0" asp-action="SearchProductByFilter" method="get">
+            <input class="form-control mr-sm-2"
+                   type="search"
+                   value="@ViewData["SearchProduct"]"
+                   name="productName"
+                   placeholder="جستجو"
+                   aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">جستجو</button>
+        </form>
+    </div>*@
+</div>
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-danger" style="margin-top: 15px;">
+        محصولی یافت نشد
+    </div>
+}
+else
+{
+    foreach (var item in Model)
+    {
+        <partial name="Product/_BoxManageProducts" model="@item" />
+    }
+}

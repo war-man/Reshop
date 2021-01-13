@@ -1,0 +1,29 @@
+﻿@model Category
+
+
+<div class="card mt-2">
+    <div class="card-body">
+        نام گروه : <b>@Model.Name</b>
+    </div>
+
+    <div class="card-body">
+        جزئیات محصول : <b>@Model.Description</b>
+    </div>
+
+    <div class="card-footer">
+        <form>
+            <a asp-action="DeleteCategory" asp-route-id="@Model.Id"
+               class="btn btn-danger">
+                حذف
+            </a>
+            <a asp-action="Detail" asp-route-id="@Model.Id"
+               class="btn btn-danger">
+                حذف
+            </a>
+            <a asp-action="EditCategory" asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                ویرایش
+            </a>
+        </form>
+    </div>
+</div>

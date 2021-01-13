@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-3">
+        <div class="card p-3">
+            <a asp-controller="ProductsManager" 
+               class="btn btn-success btn-block">
+                مدیریت محصولات
+            </a>
+
+            <a asp-controller="RolesManager" 
+               class="btn btn-success btn-block">
+                مدیریت مقام ها
+            </a>
+
+            <a asp-controller="UsersManager" 
+               class="btn btn-success btn-block">
+                مدیریت کاربران
+            </a>
+
+            <a asp-controller="CategoriesManager" 
+               class="btn btn-success btn-block">
+                مدیریت گروه ها
+            </a>
+        </div>
+    </div>
+</div>
+
