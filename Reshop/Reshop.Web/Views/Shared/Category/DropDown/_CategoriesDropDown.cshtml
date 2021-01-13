@@ -1,0 +1,15 @@
+﻿@inject IUnitOfWork uow;
+
+<li>
+    <ul class="dropdown">
+
+        @foreach (var item in await uow.CategoryRe.GetCategoriesForShowAsync())
+        {
+            <li>
+                <a asp-controller="Product" asp-action="ShowProductsByCategoryId" asp-route-categoryId="@item.CategoryId" asp-route-categoryName="@item.Name">
+                    @item.Name
+                </a>
+            </li>
+        }
+    </ul>
+</li>
