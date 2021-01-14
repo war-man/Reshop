@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Reshop.Application.Services.DateConvertor;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
@@ -36,11 +37,18 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 .Select(c => c.Category)
                 .ToListAsync();
 
+            var comments =await _context.Products
+                .Where(c => c.Id == productId)
+                .SelectMany(c => c.CommentsForProduct)
+                .OrderByDescending(c=> c.Comment)
+                .ToListAsync();
+
             return new DetailViewModel()
             {
                 UserId = userId,
                 Product = product,
                 Categories = categoryOfProduct,
+                CommentsForProduct = comments
             };
         }
 
@@ -149,6 +157,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 Item = item,
                 Description = model.Description,
                 ShortKey = GenerateShortKey(),
+                DateTime = DateTime.Now.ToShamsi()
             };
             // add product 
             await _context.AddAsync(pro);
@@ -235,6 +244,20 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             {
                 Products = products
             };
+        }
+
+        public async Task AddCommentToProduct(CommentForProduct model)
+        {
+            var comment = new CommentForProduct()
+            {
+                Comment = model.Comment,
+                UserId = model.UserId,
+                FullName = model.FullName,
+                ProductId = model.ProductId,
+                DateTime = model.DateTime
+            };
+            await _context.AddAsync(comment);
+            await _context.SaveChangesAsync();
         }
 
         #region GenerateShortKey

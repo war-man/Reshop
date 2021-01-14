@@ -21,7 +21,6 @@ namespace Reshop.Web.Controllers.User.Account
         #region Register
 
         [HttpGet]
-        [Route("Register")]
         public IActionResult Register()
         {
             if (_signInManager.IsSignedIn(User))
@@ -32,7 +31,6 @@ namespace Reshop.Web.Controllers.User.Account
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Register")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (_signInManager.IsSignedIn(User))
@@ -68,7 +66,6 @@ namespace Reshop.Web.Controllers.User.Account
         #region Login
 
         [HttpGet]
-        [Route("Login")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             if (_signInManager.IsSignedIn(User))
@@ -86,7 +83,6 @@ namespace Reshop.Web.Controllers.User.Account
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("Login")]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             if (_signInManager.IsSignedIn(User))

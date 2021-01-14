@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces;
 
 namespace Reshop.Web.Controllers.Product
@@ -22,6 +24,7 @@ namespace Reshop.Web.Controllers.Product
             return View(await _uow.ProductRe.GetAllProductsAsync());
         }
 
+        [Authorize]
         [HttpGet]
         [Route("Product/{productId}/{productName}")]
         public async Task<IActionResult> DetailOfProduct(int productId, string? productName)
@@ -48,7 +51,29 @@ namespace Reshop.Web.Controllers.Product
 
             if (product == null) return NotFound();
 
-            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ","-")}");
+            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
+
+            return Redirect(uri.AbsoluteUri);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCommentToProduct(CommentForProduct model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                await _uow.ProductRe.AddCommentToProduct(model);
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            var product = await _uow.ProductRe.FindByIdAsync(model.ProductId);
+            if (product == null) return NotFound();
+
+            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
 
             return Redirect(uri.AbsoluteUri);
         }

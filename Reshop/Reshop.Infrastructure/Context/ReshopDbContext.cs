@@ -22,6 +22,7 @@ namespace Reshop.Infrastructure.Context
         public DbSet<ProductToCategory> ProductToCategories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<CommentForProduct> CommentsForProduct { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

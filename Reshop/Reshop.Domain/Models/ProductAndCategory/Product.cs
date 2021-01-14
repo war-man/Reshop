@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reshop.Domain.Models.User.Cart;
 
@@ -20,9 +22,12 @@ namespace Reshop.Domain.Models.ProductAndCategory
         [Required]
         public int ImageId { get; set; }
 
+        public string DateTime { get; set; }
+
 
         public ICollection<ProductToCategory> ProductToCategories { get; set; }
         public Item Item { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
+        public IList<CommentForProduct> CommentsForProduct { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿@model DetailViewModel
+﻿@using Reshop.Application.Services.DateConvertor
+@model DetailViewModel
+@inject UserManager<User> UserManager;
 @{
     ViewData["Title"] = "کالا " + Model.Product.Name;
 }
@@ -30,10 +32,53 @@
     }
 </dl>
 <div>
-    
+
     <form asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@Model.Product.ItemId" asp-route-userId="@Model.UserId" method="post">
         <button type="submit" class="btn btn-danger">افزودن به سبد خرید</button>
     </form>
+
+    @{
+        var user = await UserManager.FindByIdAsync(Model.UserId);
+
+        var addCommentToProduct = new CommentForProduct()
+        {
+            UserId = Model.UserId,
+            ProductId = Model.Product.Id,
+            FullName = user.FullName,
+            DateTime = DateTime.Now.ToShamsi()
+        };
+    }
+    <partial name="Product/AddCommentToProduct" model="addCommentToProduct" />
+
+    @foreach (var comment in Model.CommentsForProduct)
+    {
+        <div class="card">
+
+            <div class="card-body">
+                نام کاربر : @comment.FullName <br />
+
+                تاریخ : @comment.DateTime <br />
+
+                کامنت : @comment.Comment <br />
+
+                لایک : @comment.Like <br />
+
+                @*<a asp-controller="Product" asp-action="LikeTheComment" asp-route-commentId="@comment.CommentId"
+           class="btn btn-info">
+            لایک
+        </a>*@
+            </div>
+            @*@{
+                var answer = new AnswerToComment()
+                {
+                    CommentId = comment.CommentId,
+                    ProductId = Model.Product.Id
+                };
+            }
+
+            <partial name="Product/_AnswerToComment" model="answer" />*@
+        </div>
+    }
 
 </div>
 

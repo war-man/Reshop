@@ -12,7 +12,7 @@ namespace Reshop.Domain.Models.User.Cart
         [Required]
         public string UserId { get; set; }
         [Required]
-        public DateTime CreateDate { get; set; }
+        public string CreateDate { get; set; }
         public bool IsFinally { get; set; }
 
         public Identity.User User { get; set; }

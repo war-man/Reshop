@@ -22,5 +22,6 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
         Task<Product> FindByIdAsync(int productId);
         Task<Product> FindProductByShortKeyAsync(string key);
         Task<AddOrEditCategoryViewModel> GetAllProductsForAddingCategory();
+        Task AddCommentToProduct(CommentForProduct model);
     }
 }
