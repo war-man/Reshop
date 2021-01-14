@@ -123,7 +123,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "images",
-                    pro.Id + Path.GetExtension(model.Picture.FileName));
+                    pro.ImageId + Path.GetExtension(model.Picture.FileName));
 
 
                 await using var stream = new FileStream(filePath, FileMode.Create);
@@ -156,6 +156,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
             // add product itemId
             pro.ItemId = pro.Id;
+            pro.ImageId = pro.Id;
             await _context.SaveChangesAsync();
 
             // add picture
@@ -164,23 +165,26 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "images",
-                    pro.Id + Path.GetExtension(model.Picture.FileName));
+                    pro.ImageId + Path.GetExtension(model.Picture.FileName));
 
                 await using var stream = new FileStream(filePath, FileMode.Create);
                 await model.Picture.CopyToAsync(stream);
             }
 
             // add product selected categories
-            foreach (var productToCategory in model.SelectedCategories
-                .Select(category => new ProductToCategory()
-                {
-                    ProductId = pro.Id,
-                    CategoryId = category
-                }))
+            if (model.SelectedCategories!=null)
             {
-                await _context.AddAsync(productToCategory);
+                foreach (var productToCategory in model.SelectedCategories
+                    .Select(category => new ProductToCategory()
+                    {
+                        ProductId = pro.Id,
+                        CategoryId = category
+                    }))
+                {
+                    await _context.AddAsync(productToCategory);
+                }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteProductAsync(int productId, string userId)

@@ -1,0 +1,31 @@
+﻿@model RoleViewModel
+@{
+    ViewData["Title"] = "EditRole";
+}
+
+<div class="text-center">
+    <h1>ویرایش مقام</h1>
+</div>
+<hr />
+
+<form asp-action="EditRole" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" placeholder="نام مقام را وارد کنید">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">ویرایش مقام</button>
+    </div>
+
+</form>
+<a asp-action="Index" class="btn btn-danger mt-3">بازگشت</a>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

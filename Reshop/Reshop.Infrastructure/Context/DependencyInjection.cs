@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reshop.Application.Interfaces;
+using Reshop.Application.Services.Identity;
 using Reshop.Domain.Models.User.Identity;
 using Reshop.Domain.Services.Interfaces;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
@@ -32,8 +33,13 @@ namespace Reshop.Infrastructure.Context
                 {
                     options.User.RequireUniqueEmail = true;
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@";
+                    options.Password.RequiredLength = 1;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredUniqueChars = 0;
                 })
                 .AddEntityFrameworkStores<ReshopDbContext>()
+                .AddErrorDescriber<PersianIdentityErrorDescriber>()
                 .AddDefaultTokenProviders();
 
             #endregion

@@ -35,7 +35,8 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
             return View(await _uow.CategoryRe.GetAllCategoriesForAddingProduct(userId));
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProduct(AddOrEditProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -98,7 +99,6 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return NotFound();
 

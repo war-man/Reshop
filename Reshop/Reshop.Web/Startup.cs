@@ -63,6 +63,10 @@ namespace Reshop.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=AdminsPanel}/{action=Index}/{id?}"
+                );
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Product}/{action=Index}/{id?}");
             });

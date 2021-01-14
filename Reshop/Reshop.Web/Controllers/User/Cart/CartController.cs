@@ -25,8 +25,13 @@ namespace Reshop.Web.Controllers.User.Cart
         {
             await _uow.CartRe.AddToCartAsync(itemId, userId);
 
-            Uri uri = new Uri("https://localhost:44334" + "/Product/" + itemId);
-            return RedirectToAction(uri.AbsoluteUri);
+            var product = await _uow.ProductRe.FindByIdAsync(itemId);
+
+            if (product == null) return NotFound();
+
+            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
+
+            return Redirect(uri.AbsoluteUri);
         }
 
         [HttpGet]

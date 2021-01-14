@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -23,15 +21,23 @@ namespace Reshop.Web.Controllers.User.Account
         #region Register
 
         [HttpGet]
+        [Route("Register")]
         public IActionResult Register()
         {
+            if (_signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Product");
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Register")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            if (_signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Product");
+
             if (!ModelState.IsValid) return View(model);
 
             var user = new Domain.Models.User.Identity.User()
@@ -62,6 +68,7 @@ namespace Reshop.Web.Controllers.User.Account
         #region Login
 
         [HttpGet]
+        [Route("Login")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             if (_signInManager.IsSignedIn(User))
@@ -79,6 +86,7 @@ namespace Reshop.Web.Controllers.User.Account
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Login")]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             if (_signInManager.IsSignedIn(User))

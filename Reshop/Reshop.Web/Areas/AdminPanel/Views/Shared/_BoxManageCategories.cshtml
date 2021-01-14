@@ -11,19 +11,15 @@
     </div>
 
     <div class="card-footer">
-        <form>
-            <a asp-action="DeleteCategory" asp-route-id="@Model.Id"
-               class="btn btn-danger">
-                حذف
-            </a>
-            <a asp-action="Detail" asp-route-id="@Model.Id"
-               class="btn btn-danger">
-                حذف
-            </a>
-            <a asp-action="EditCategory" asp-route-id="@Model.Id"
+        <form asp-action="DeleteCategory" asp-route-categoryId="@Model.Id" method="post">
+                <button onclick="return confirm('ایا از حذف محصول مطمئن هستید')" type="submit" class="btn btn-danger">
+                    حذف
+                </button>
+            </form>
+
+            <a asp-action="EditCategory" asp-route-categoryId="@Model.Id"
                class="btn btn-primary">
                 ویرایش
             </a>
-        </form>
     </div>
 </div>

@@ -86,19 +86,21 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 Description = model.Category.Description
             };
             await _context.Categories.AddAsync(ca);
-
-
-            foreach (var item in model.SelectedProducts)
-            {
-                var productToCategory = new ProductToCategory()
-                {
-                    CategoryId = model.Category.Id,
-                    ProductId = item
-                };
-                await _context.AddAsync(productToCategory);
-            }
-
             await _context.SaveChangesAsync();
+
+            if (model.SelectedProducts != null)
+            {
+                foreach (var item in model.SelectedProducts)
+                {
+                    var productToCategory = new ProductToCategory()
+                    {
+                        CategoryId = ca.Id,
+                        ProductId = item
+                    };
+                    await _context.AddAsync(productToCategory);
+                }
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<AddOrEditCategoryViewModel> GetCategoryColumnsWithItsProductsAsync(int categoryId)

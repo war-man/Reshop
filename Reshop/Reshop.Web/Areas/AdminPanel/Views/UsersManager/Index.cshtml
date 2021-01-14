@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ManageUsersViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-danger" style="margin-top: 15px;">
+        کاربری یافت نشد
+    </div>
+}
+else
+{
+    <div class="card mt-2">
+
+        <div class="card-header text-center display-3">
+            کاربران
+        </div>
+
+        @foreach (var user in Model)
+        {
+
+
+
+            <div class="card-body">
+                نام کاربر : <b>@user.UserName</b>
+            </div>
+            <div class="card-body">
+                ایمیل کاربر : <b>@user.Email</b>
+            </div>
+            <div class="card-body">
+                شماره تلفن کاربر : <b>@user.PhoneNumber</b>
+            </div>
+            <div class="card-body">
+                ادرس کاربر : <b>@user.Address</b>
+            </div>
+
+
+            <div class="card-footer row">
+                <form asp-action="DeleteUser" asp-route-userId="@user.Id" method="post">
+                    <button type="submit" onclick="return confirm('are you sure?')" class="btn btn-danger">حذف کاربر</button>
+                </form>
+
+                    <a  asp-action="EditUser" asp-route-userId="@user.Id"
+                       class="btn btn-primary">
+                        ویرایش کاربر
+                    </a>
+
+                    <a  asp-action="AddUserToRole" asp-route-userId="@user.Id"
+                       class="btn btn-primary">
+                        افزودن به مقام
+                    </a>
+
+                    <a  asp-action="RemoveUserFromRole" asp-route-id="@user.Id"
+                       class="btn btn-danger">
+                        حذف کاربر از مقام
+                    </a>
+            </div>
+
+        }
+    </div>
+}

@@ -1,15 +1,16 @@
 ﻿@inject IUnitOfWork uow;
 
-<li>
-    <ul class="dropdown">
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">گروه ها</a>
+    <div class="dropdown-menu" aria-labelledby="dropdown09">
 
         @foreach (var item in await uow.CategoryRe.GetCategoriesForShowAsync())
         {
-            <li>
-                <a asp-controller="Product" asp-action="ShowProductsByCategoryId" asp-route-categoryId="@item.CategoryId" asp-route-categoryName="@item.Name">
-                    @item.Name
-                </a>
-            </li>
+            <a class="dropdown-item" asp-controller="Product"
+               asp-action="ShowProductsByCategoryId"
+               asp-route-categoryId="@item.CategoryId"
+               asp-route-categoryName="@item.Name">@item.Name</a>
+            <span class="badge badge-primary badge-pill">@item.ProductCount</span>
         }
-    </ul>
+    </div>
 </li>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#nullable enable
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [Route("Product/{productId}/{productName}")]
-        public async Task<IActionResult> DetailOfProduct(int productId, string productName)
+        public async Task<IActionResult> DetailOfProduct(int productId, string? productName)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -37,6 +38,19 @@ namespace Reshop.Web.Controllers.Product
             ViewData["CategoryName"] = categoryName;
 
             return View(await _uow.ProductRe.ShowProductsByCategoryIdAsync(categoryId));
+        }
+
+        [HttpGet]
+        [Route("p/{key}")]
+        public async Task<IActionResult> ShortKeyRedirect(string key)
+        {
+            var product = await _uow.ProductRe.FindProductByShortKeyAsync(key);
+
+            if (product == null) return NotFound();
+
+            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ","-")}");
+
+            return Redirect(uri.AbsoluteUri);
         }
     }
 }

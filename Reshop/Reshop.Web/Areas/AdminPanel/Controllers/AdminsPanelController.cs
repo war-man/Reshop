@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Reshop.Web.Areas.AdminPanel.Controllers
 {
     [Area("AdminPanel")]
-    public class AdminPanelController : Controller
+    public class AdminsPanelController : Controller
     {
         // GET
         public IActionResult Index()

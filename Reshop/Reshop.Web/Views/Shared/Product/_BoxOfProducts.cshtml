@@ -9,7 +9,9 @@
             <h5 class="card-title text-dark">@Model.Name</h5>
             <p class="card-title">@Model.Item.Price</p>
 
-            <a asp-action="DetailOfProduct" asp-controller="Product" asp-route-id="@Model.Id"
+            <a asp-controller="Product" asp-action="DetailOfProduct"
+               asp-route-productId="@Model.Id"
+               asp-route-productName="@Model.Name.Replace(" ","-")"
                target="_blank" class="btn btn-success btn-block">
                 جزئیات محصول
             </a>

@@ -10,7 +10,7 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20210113181939_tables")]
+    [Migration("20210114102425_tables")]
     partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
