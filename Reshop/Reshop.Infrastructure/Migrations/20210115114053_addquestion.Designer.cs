@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210115114053_addquestion")]
+    partial class addquestion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,9 +288,6 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("QuestionForProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")

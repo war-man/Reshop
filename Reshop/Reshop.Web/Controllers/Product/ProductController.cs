@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Reshop.Domain.Models.ProductAndCategory;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.Services.Interfaces;
 
 namespace Reshop.Web.Controllers.Product
@@ -76,6 +77,43 @@ namespace Reshop.Web.Controllers.Product
             Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
 
             return Redirect(uri.AbsoluteUri);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddQuestionToProduct(QuestionForProduct model)
+        {
+            try
+            {
+                await _uow.ProductRe.AddQuestionToProduct(model);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            var product = await _uow.ProductRe.FindByIdAsync(model.ProductId);
+            if (product == null) return NotFound();
+
+            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
+
+            return Redirect(uri.AbsoluteUri);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AnswerToQuestionInProduct(AnswerToQuestion model)
+        {
+            try
+            {
+                await _uow.ProductRe.AnswerToQuestionInProduct(model);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reshop.Domain.Models.ProductAndCategory;
 
-namespace Reshop.Domain.Models.ProductAndCategory
+namespace Reshop.Domain.Models.User.Comment
 {
     public class CommentForProduct
     {

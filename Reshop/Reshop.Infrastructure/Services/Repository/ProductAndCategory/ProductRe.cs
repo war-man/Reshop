@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Reshop.Application.Services.DateConvertor;
 using Reshop.Domain.Models.ProductAndCategory;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
 using Reshop.Domain.ViewModels.ProductAndCategory.Product;
@@ -37,10 +38,15 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 .Select(c => c.Category)
                 .ToListAsync();
 
-            var comments =await _context.Products
+            var comments = await _context.Products
                 .Where(c => c.Id == productId)
                 .SelectMany(c => c.CommentsForProduct)
-                .OrderByDescending(c=> c.Comment)
+                .OrderByDescending(c => c.Comment)
+                .ToListAsync();
+
+            var questions = await _context.QuestionsForProduct
+                .Where(c => c.ProductId == productId)
+                .Include(c=> c.AnswersToQuestion)
                 .ToListAsync();
 
             return new DetailViewModel()
@@ -48,7 +54,8 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 UserId = userId,
                 Product = product,
                 Categories = categoryOfProduct,
-                CommentsForProduct = comments
+                CommentsForProduct = comments,
+                QuestionsForProduct = questions,
             };
         }
 
@@ -181,7 +188,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             }
 
             // add product selected categories
-            if (model.SelectedCategories!=null)
+            if (model.SelectedCategories != null)
             {
                 foreach (var productToCategory in model.SelectedCategories
                     .Select(category => new ProductToCategory()
@@ -258,6 +265,43 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             };
             await _context.AddAsync(comment);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task AddQuestionToProduct(QuestionForProduct model)
+        {
+            var question = new QuestionForProduct()
+            {
+                QuestionText = model.QuestionText,
+                UserId = model.UserId,
+                FullName = model.FullName,
+                ProductId = model.ProductId,
+                DateTime = model.DateTime
+            };
+            await _context.AddAsync(question);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AnswerToQuestionInProduct(AnswerToQuestion model)
+        {
+            var answerToQuestion = new AnswerToQuestion()
+            {
+                UserId = model.UserId,
+                FullName = model.FullName,
+                QuestionId = model.QuestionId,
+                DateTime = model.DateTime,
+                AnswerText = model.AnswerText,
+            };
+            await _context.AddAsync(answerToQuestion);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Product> FindProductByQuestionId(int questionId)
+        {
+            var productId = _context.QuestionsForProduct
+                .Where(c => c.Id == questionId)
+                .Select(c => c.ProductId);
+
+            return await _context.Products.FindAsync(productId);
         }
 
         #region GenerateShortKey

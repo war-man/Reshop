@@ -1,5 +1,4 @@
-﻿@using Reshop.Application.Services.DateConvertor
-@model DetailViewModel
+﻿@model DetailViewModel
 @inject UserManager<User> UserManager;
 @{
     ViewData["Title"] = "کالا " + Model.Product.Name;
@@ -47,40 +46,81 @@
             FullName = user.FullName,
             DateTime = DateTime.Now.ToShamsi()
         };
+
+        var addQuestionToProduct = new QuestionForProduct()
+        {
+            UserId = Model.UserId,
+            ProductId = Model.Product.Id,
+            FullName = user.FullName,
+            DateTime = DateTime.Now.ToShamsi()
+        };
     }
     <partial name="Product/AddCommentToProduct" model="addCommentToProduct" />
-
-    @foreach (var comment in Model.CommentsForProduct)
-    {
-        <div class="card">
-
-            <div class="card-body">
-                نام کاربر : @comment.FullName <br />
-
-                تاریخ : @comment.DateTime <br />
-
-                کامنت : @comment.Comment <br />
-
-                لایک : @comment.Like <br />
-
-                @*<a asp-controller="Product" asp-action="LikeTheComment" asp-route-commentId="@comment.CommentId"
-           class="btn btn-info">
-            لایک
-        </a>*@
-            </div>
-            @*@{
-                var answer = new AnswerToComment()
-                {
-                    CommentId = comment.CommentId,
-                    ProductId = Model.Product.Id
-                };
-            }
-
-            <partial name="Product/_AnswerToComment" model="answer" />*@
-        </div>
-    }
-
+    <partial name="Product/AddQuestionToProduct" model="addQuestionToProduct" />
 </div>
+<div class="row">
+    <div class="col-6">
+        @foreach (var comment in Model.CommentsForProduct)
+        {
+            <div class="card">
+
+                <div class="card-body">
+                    نام کاربر : @comment.FullName <br />
+
+                    تاریخ : @comment.DateTime <br />
+
+                    کامنت : @comment.Comment <br />
+
+                    لایک : @comment.Like <br />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-6">
+        @foreach (var question in Model.QuestionsForProduct)
+        {
+            <div class="card">
+
+                <div class="card-body">
+                    نام کاربر : @question.FullName <br />
+
+                    تاریخ : @question.DateTime <br />
+
+                    کامنت : @question.QuestionText <br />
+
+                    لایک : @question.Like <br /> <hr />
+
+                    @{
+                        var answerToQuestion = new AnswerToQuestion()
+                        {
+                            UserId = Model.UserId,
+                            FullName = user.FullName,
+                            QuestionId = question.Id,
+                            DateTime = DateTime.Now.ToShamsi(),
+                        };
+                    }
+                    <partial name="Product/AnswerToQuestion" model="answerToQuestion" />
+
+                    <hr />
+                    @foreach (var answer in question.AnswersToQuestion)
+                    {
+                        <div class="card-body">
+                            نام کاربری جواب دهنده : @answer.FullName <br />
+
+                            تاریخ جواب دهنده : @answer.DateTime <br />
+
+                            کامنت جواب دهنده : @answer.AnswerText <br />
+
+                            لایک : @answer.Like <br /> <hr />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
 
 
 

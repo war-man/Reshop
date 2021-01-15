@@ -1,10 +1,10 @@
 ﻿using System;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Reshop.Application.Interfaces;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Models.User.Cart;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.Models.User.Identity;
 
 namespace Reshop.Infrastructure.Context
@@ -23,6 +23,8 @@ namespace Reshop.Infrastructure.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<CommentForProduct> CommentsForProduct { get; set; }
+        public DbSet<QuestionForProduct> QuestionsForProduct { get; set; }
+        public DbSet<AnswerToQuestion> AnswersToQuestion { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
