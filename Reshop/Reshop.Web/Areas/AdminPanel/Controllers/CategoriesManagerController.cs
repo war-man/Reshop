@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Reshop.Application.Services;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
@@ -24,45 +27,39 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
         #region Add
 
+
         [HttpGet]
-        public async Task<IActionResult> AddCategory()
+        public async Task<IActionResult> AddOrEditCategory(int categoryId = 0)
         {
-            return View(await _uow.ProductRe.GetAllProductsForAddingCategory());
+            return categoryId == 0 ? View(await _uow.ProductRe.GetAllProductsForAddingCategory()) : View(await _uow.CategoryRe.GetCategoryColumnsWithItsProductsAsync(categoryId));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddCategory(AddOrEditCategoryViewModel model)
+        public async Task<IActionResult> AddOrEditCategory(AddOrEditCategoryViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            await _uow.CategoryRe.AddCategoryAsync(model);
-
-            return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid) return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditCategory", model) });
+            try
+            {
+                if (model.CategoryId == 0)
+                {
+                    await _uow.CategoryRe.AddCategoryAsync(model);
+                }
+                else
+                {
+                    await _uow.CategoryRe.EditCategoryAsync(model);
+                }
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Category/_BoxManageCategories", await _uow.CategoryRe.GetAllCategories()) });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditCategory", model) });
+            }
         }
 
         #endregion
 
-        #region Edit
 
-        [HttpGet]
-        public async Task<IActionResult> EditCategory(int categoryId)
-        {
-            return View(await _uow.CategoryRe.GetCategoryColumnsWithItsProductsAsync(categoryId));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCategory(AddOrEditCategoryViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            await _uow.CategoryRe.EditCategoryAsync(model);
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        #endregion
 
         #region Delete
 

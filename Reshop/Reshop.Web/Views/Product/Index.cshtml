@@ -1,16 +1,42 @@
-﻿@model IEnumerable<Product>
+﻿@model ShowProductsViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
-<div>
-    <h4>Product</h4>
-    <hr />
-    @foreach (var item in Model)
-    {
-       <partial name="Product/_BoxOfProducts" model="item"/>
-    }
+<div class="text-center display-4">
+    خوش آمدید
 </div>
+<hr />
+<div class="row" id="products">
+    @await Html.PartialAsync("Product/_BoxOfProducts", Model.Products)
+</div>
+
+<hr />
+
+<nav class=" mt-3">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(((Model.PageId) -1) == 0 ? "disabled":"")">
+            <a class="page-link" asp-action="Index" asp-route-pageId="@((Model.PageId) -1)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <li class="page-item @(i== Model.PageId? "active":"")">
+                <a class="page-link" asp-action="Index" asp-route-pageId="@i">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.PageId == (int)Model.PageCount ? "disabled":"")">
+            <a class="page-link" asp-route-pageId="@((Model.PageId) +1)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+
+    </ul>
+</nav>
+

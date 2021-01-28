@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ManageUsersViewModel>
+
+
+<div class="card mt-2">
+
+    <div class="card-header text-center display-3">
+        کاربران
+    </div>
+
+    @foreach (var user in Model)
+    {
+
+
+
+        <div class="card-body">
+            نام کاربر : <b>@user.UserName</b>
+        </div>
+        <div class="card-body">
+            ایمیل کاربر : <b>@user.Email</b>
+        </div>
+        <div class="card-body">
+            شماره تلفن کاربر : <b>@user.PhoneNumber</b>
+        </div>
+        <div class="card-body">
+            ادرس کاربر : <b>@user.Address</b>
+        </div>
+
+
+        <div class="card-footer">
+            <form asp-action="DeleteUser" asp-route-userId="@user.Id" method="post">
+                <button type="submit"  class="btn btn-danger ">حذف کاربر</button>
+            </form>
+
+            <a onclick="showModal('@Url.Action("AddUserToRole", "UsersManager", new {userId = user.Id}, Context.Request.Scheme)', 'مقام ها')"
+               class="btn btn-primary text-white d-inline">
+                افزودن کاربر به مقام
+            </a>
+
+            <a onclick="showModal('@Url.Action("RemoveUserFromRole", "UsersManager", new {userId = user.Id}, Context.Request.Scheme)', 'مقام ها')"
+               class="btn btn-danger d-inline">
+                حذف کاربر از مقام
+            </a>
+        </div>
+
+    }
+</div>

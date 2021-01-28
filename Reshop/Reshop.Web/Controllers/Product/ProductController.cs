@@ -19,9 +19,9 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageId = 1)
         {
-            return View(await _uow.ProductRe.GetAllProductsAsync());
+            return View(await _uow.ProductRe.GetAllProductsAsync(pageId));
         }
 
         [Authorize]
@@ -77,5 +77,6 @@ namespace Reshop.Web.Controllers.Product
 
             return Redirect(uri.AbsoluteUri);
         }
+
     }
 }

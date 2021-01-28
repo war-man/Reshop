@@ -82,8 +82,8 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
         {
             var ca = new Category()
             {
-                Name = model.Category.Name,
-                Description = model.Category.Description
+                Name = model.CategoryName,
+                Description = model.CategoryDescription
             };
             await _context.Categories.AddAsync(ca);
             await _context.SaveChangesAsync();
@@ -118,7 +118,9 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
             return new AddOrEditCategoryViewModel()
             {
-                Category = category,
+                CategoryId = categoryId,
+                CategoryName = category.Name,
+                CategoryDescription = category.Description,
                 Products = products
             };
         }
@@ -129,10 +131,10 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
         public async Task EditCategoryAsync(AddOrEditCategoryViewModel model)
         {
-            var category = await FindCategoryByIdAsync(model.Category.Id);
+            var category = await FindCategoryByIdAsync(model.CategoryId);
 
-            category.Name = model.Category.Name;
-            category.Description = model.Category.Description;
+            category.Name = model.CategoryName;
+            category.Description = model.CategoryDescription;
 
             if (model.SelectedProducts != null)
             {
@@ -140,7 +142,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 {
                     var products = new ProductToCategory()
                     {
-                        CategoryId = model.Category.Id,
+                        CategoryId = model.CategoryId,
                         ProductId = item
                     };
                     _context.Remove(products);

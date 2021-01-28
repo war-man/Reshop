@@ -1,45 +1,37 @@
 ﻿@model AddOrRemoveUserFromRoleViewModel
-@{
-    ViewData["Title"] = "AddUserToRole";
-}
+@{ Layout = null; }
 
-<div class="text-center">
-    <h1>افزودن کاربر به مقام</h1>
-</div>
-<hr />
+<form asp-action="AddUserToRole" method="post" onsubmit="return AddProductAjaxPost(this);" autocomplete="off">
+    <div asp-validation-summary="ModelOnly"></div>
 
+    <input type="hidden" asp-for="@Model.UserId" />
 
-@if (!Model.RolesName.Any())
-{
-    <div class="alert alert-danger" style="margin-top: 15px;">
-        هیچ مقامی یافت نشد
-    </div>
-}
-else
-{
-    <div class="card mt-2">
-        <div class="card-header text-center">
-            <h2> مقام ها</h2>
-        </div> 
+    <div class="row mb-2">
+        <div class="col-md-11 card" style="margin-right: 33px">
 
-        <form asp-action="AddUserToRole" method="post">
-
-            <div asp-validation-summary="ModelOnly"></div>
-            <input type="hidden" asp-for="@Model.UserId" />
-
-
-            @foreach (var item in Model.RolesName)
+            @if (Model != null)
             {
-                <div class="card-body">
-                    <div class="form-group">
-                        <input type="checkbox" name="SelectedRoles" value="@item" />@item
-                    </div>
+                <div class="card-body pre-scrollable">
+                    @foreach (var item in Model.RolesName)
+                    {
+                        <div class="form-group col-md-6">
+                            <input type="checkbox" name="SelectedRoles" value="@item" /> @item
+                        </div>
+                    }
                 </div>
-            }
 
-            <div class="card-footer">
-                <button class="btn btn-primary" type="submit">ثبت</button>
-            </div>
-        </form>
+            }
+        </div>
     </div>
-}
+    <div class="row card-footer">
+        <div class="col-md-6">
+            <input type="submit" value="بروز رسانی" class="btn btn-success btn-block" />
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" aria-label="Close">
+                خروج
+            </button>
+        </div>
+    </div>
+</form>
+

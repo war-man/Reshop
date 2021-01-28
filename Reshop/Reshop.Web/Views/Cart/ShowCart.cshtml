@@ -29,6 +29,10 @@
                         <form asp-action="RemoveCart" asp-route-detailId="@item.DetailId" method="post">
                             <button type="submit">حذف</button>
                         </form>
+
+                        <a class="btn btn-danger" onclick="DeleteProductFromCard('/Card/Remove/@item.DetailId')">
+                            حذف
+                        </a>
                     </td>
                 </tr>
             }
@@ -40,4 +44,8 @@
 else
 {
     <div class="alert alert-danger">فاکتوری نیست</div>
+}
+
+@section Scripts {
+    <script src="js/Delete.js"></script>
 }

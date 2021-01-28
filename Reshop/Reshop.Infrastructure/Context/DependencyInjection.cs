@@ -56,6 +56,7 @@ namespace Reshop.Infrastructure.Context
             #endregion
 
             services.AddAuthentication();
+            services.AddMemoryCache();
 
             return services;
         }

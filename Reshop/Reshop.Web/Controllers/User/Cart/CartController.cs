@@ -42,13 +42,14 @@ namespace Reshop.Web.Controllers.User.Cart
             return View(await _uow.CartRe.ShowCartAsync(userId));
         }
 
-        [HttpPost]
+        [HttpDelete]
         [ValidateAntiForgeryToken]
+        [Route("Card/Remove/{detailId}")]
         public async Task<IActionResult> RemoveCart(int detailId)
         {
             await _uow.CartRe.RemoveCartAsync(detailId);
 
-            return RedirectToAction(nameof(ShowCart));
+            return Json(new {success = true, message = "delete successful"});
         }
     }
 }

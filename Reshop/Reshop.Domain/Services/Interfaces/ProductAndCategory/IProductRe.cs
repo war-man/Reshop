@@ -11,8 +11,8 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
 {
     public interface IProductRe
     {
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<DetailViewModel> GetDetailOfProductAsync(int productId,string userId);
+        Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1);
+        Task<DetailViewModel> GetDetailOfProductAsync(int productId, string userId);
         Task<IEnumerable<Product>> ShowProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<Product>> SearchProductByFilterAsync(string productName);
         Task<AddOrEditProductViewModel> GetProductColumnsForEditProductAsync(int productId, string userId);

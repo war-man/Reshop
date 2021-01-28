@@ -3,36 +3,24 @@
     ViewData["Title"] = "Index";
 }
 
-<div>
-    <a  asp-action="AddCategory" class="btn btn-primary">افزودن گروه</a>
-    
-    @*<div class="mt-3">
-        <form class="form-inline my-2 my-lg-0"  asp-action="SearchCategoriesByFilter" method="get">
-            <input class="form-control mr-sm-2"
-                   type="search"
-                   value="@ViewData["CategoryName"]"
-                   name="categoryName"
-                   placeholder="جستجو"
-                   aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">جستجو</button>
-        </form>
-    </div>*@
-</div>
 
+<a onclick="showModal('@Url.Action("AddOrEditCategory","CategoriesManager",null,Context.Request.Scheme)', 'گروه جدید')" class="btn btn-success text-white">افزودن کالا</a>
 
 @if (!Model.Any())
 {
-    <div class="alert alert-danger" style="margin-top: 15px;">
+    <div class="alert alert-danger" style="margin-top: 15px">
         گروهی یافت نشد
     </div>
 }
 else
 {
+<div id="view-all">
+    @await Html.PartialAsync("Category/_BoxManageCategories", Model);
+</div>
+}
 
 
-    @foreach (var item in Model)
-    {
-        <partial name="_BoxManageCategories" model="@item" />
-    }
 
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

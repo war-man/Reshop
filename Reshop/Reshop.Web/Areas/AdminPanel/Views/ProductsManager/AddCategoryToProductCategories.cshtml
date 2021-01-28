@@ -1,44 +1,47 @@
 ﻿@model AddCategoryToProductCategories
 @{
-    ViewData["Title"] = "AddProductToCategory";
+    Layout = null;
 }
-
-<div class="text-center">
-    <h1>افزودن محصول به گروه</h1>
-</div>
-<hr />
-
 @if (Model == null)
 {
-    <div class="alert alert-danger" style="margin-top: 15px;">
+    <div class="alert alert-danger">
         هیچ مقامی یافت نشد
     </div>
 }
 else
 {
-    <div class="card mt-2">
-        <div class="card-header text-center">
-            <h2>گروه ها</h2>
-        </div>
-        <form asp-action="AddCategoryToProductCategories" method="post">
-            <div asp-validation-summary="ModelOnly"></div>
+    <form asp-action="AddCategoryToProductCategories" method="post" enctype="multipart/form-data" onsubmit="return AddProductAjaxPost(this);" autocomplete="off">
+        <div asp-validation-summary="ModelOnly"></div>
 
-            <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="ProductId" />
 
-            @foreach (var category in Model.Categories)
-            {
-                <div class="form-group card-body">
-                    <input type="checkbox" name="SelectedCategories" value="@category.Id" />@category.Name
-                </div>
-            }
+        <div class="row mb-2">
+            <div class="col-md-11 card" style="margin-right: 33px">
 
-            <div class="card-footer">
+                @if (Model.Categories != null)
+                {
+                    <div class="card-body pre-scrollable">
+                        @foreach (var item in Model.Categories)
+                        {
+                            <div class="form-group col-md-6">
+                                <input type="checkbox" name="SelectedCategories" value="@item.Id" /> @item.Name
+                            </div>
+                        }
+                    </div>
 
-                <button class="btn btn-success" type="submit">افزودن گروه</button>
-
-                <a asp-action="Index" class="btn btn-danger">بازگشت</a>
-
+                }
             </div>
-        </form>
-    </div>
+        </div>
+        <div class="row card-footer">
+            <div class="col-md-6">
+                <input type="submit" value="افزودن گروه" class="btn btn-success btn-block" />
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" aria-label="Close">
+                    خروج
+                </button>
+            </div>
+        </div>
+
+    </form>
 }

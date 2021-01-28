@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Reshop.Application.Services.DateConvertor;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
@@ -22,8 +24,24 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
-            => await _context.Products.Include(c => c.Item).ToListAsync();
+        public async Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1)
+        {
+            int take = 4;
+            int skip = (pageId - 1) * take;
+            int productsCount =await _context.Products.CountAsync();
+
+            double totalPages = Math.Ceiling(1.0 * productsCount / take);
+
+            var product = await _context.Products.Include(c => c.Item).OrderBy(c => c.Id)
+                .Skip(skip).Take(take).ToListAsync();
+
+            return new ShowProductsViewModel()
+            {
+                Products = product,
+                PageCount = totalPages,
+                PageId = pageId
+            };
+        }
 
         public async Task<DetailViewModel> GetDetailOfProductAsync(int productId, string userId)
         {
@@ -37,10 +55,10 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 .Select(c => c.Category)
                 .ToListAsync();
 
-            var comments =await _context.Products
+            var comments = await _context.Products
                 .Where(c => c.Id == productId)
                 .SelectMany(c => c.CommentsForProduct)
-                .OrderByDescending(c=> c.Comment)
+                .OrderByDescending(c => c.Comment)
                 .ToListAsync();
 
             return new DetailViewModel()
@@ -181,7 +199,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             }
 
             // add product selected categories
-            if (model.SelectedCategories!=null)
+            if (model.SelectedCategories != null)
             {
                 foreach (var productToCategory in model.SelectedCategories
                     .Select(category => new ProductToCategory()

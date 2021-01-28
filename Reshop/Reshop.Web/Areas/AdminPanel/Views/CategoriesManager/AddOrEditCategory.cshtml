@@ -1,0 +1,65 @@
+﻿@model AddOrEditCategoryViewModel
+@{
+    Layout = null;
+}
+
+
+<form asp-action="AddOrEditCategory" method="post" enctype="multipart/form-data" onsubmit="return AddProductAjaxPost(this);" autocomplete="off">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <input type="hidden" asp-for="CategoryId" />
+    <input type="hidden" asp-for="UserId" />
+
+
+    <div class="row mb-2">
+        <div class="col-md-7 card" style="margin-right: 27px">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-md-12 ">
+                        <label asp-for="CategoryName"></label>
+                        <input asp-for="CategoryName" class="form-control" />
+                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row ">
+                    <div class="form-group col-md-12">
+                        <label asp-for="CategoryDescription"></label>
+                        <textarea asp-for="CategoryDescription" class="form-control"></textarea>
+                        <span asp-validation-for="CategoryDescription" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row card-footer">
+                <div class=" col-md-6">
+                    <input type="submit" value="افزودن گروه" class="btn btn-success btn-block" />
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" aria-label="Close">
+                        خروج
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        @if (Model.Products != null)
+        {
+            <div class="col-md-4" style="margin-right: 12px">
+
+                <div class="row card">
+                    <div class="card-body pre-scrollable" >
+                        @foreach (var item in Model.Products)
+                        {
+                            <div class="form-group ">
+                                <input type="checkbox" name="SelectedProducts" value="@item.Id" /> @item.Name
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</form>

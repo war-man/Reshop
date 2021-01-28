@@ -1,20 +1,23 @@
-﻿@model Product
+﻿@model IEnumerable<Product>
 
-<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
-    <div class="card mt-3">
-        <a asp-action="DetailOfProduct" asp-controller="Product" asp-route-id="@Model.Id">
-            <img src="/images/@(Model.Id).jpg" height="160" width="160" class="card-img-top img-thumbnail" />
-        </a>
-        <div class="card-body">
-            <h5 class="card-title text-dark">@Model.Name</h5>
-            <p class="card-title">@Model.Item.Price</p>
-
-            <a asp-controller="Product" asp-action="DetailOfProduct"
-               asp-route-productId="@Model.Id"
-               asp-route-productName="@Model.Name.Replace(" ","-")"
-               target="_blank" class="btn btn-success btn-block">
-                جزئیات محصول
+@foreach (var item in Model)
+{
+    <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3">
+        <div class="card mt-3">
+            <a asp-action="DetailOfProduct" asp-controller="Product" asp-route-id="@item.Id">
+                <img src="/images/@(item.ImageId).jpg" height="160" width="160" class="card-img-top img-thumbnail" />
             </a>
+            <div class="card-body">
+                <h5 class="card-title text-dark">@item.Name</h5>
+                <p class="card-title">@item.Item.Price</p>
+
+                <a asp-controller="Product" asp-action="DetailOfProduct"
+                   asp-route-productId="@item.Id"
+                   asp-route-productName="@item.Name.Replace(" ","-")"
+                   target="_blank" class="btn btn-success btn-block">
+                    جزئیات محصول
+                </a>
+            </div>
         </div>
     </div>
-</div>
+}

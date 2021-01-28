@@ -1,6 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Diagnostics;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Reshop.Application.Services;
 using Reshop.Domain.Services.Interfaces;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
 using Reshop.Domain.ViewModels.ProductAndCategory.Product;
@@ -19,58 +23,60 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageId = 1)
         {
-            return View(await _uow.ProductRe.GetAllProductsAsync());
+            return View(await _uow.ProductRe.GetAllProductsAsync(pageId));
         }
 
-        #region Add
+        #region add or edit product
 
         [HttpGet]
-        public async Task<IActionResult> AddProduct()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return NotFound();
-
-            return View(await _uow.CategoryRe.GetAllCategoriesForAddingProduct(userId));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProduct(AddOrEditProductViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            await _uow.ProductRe.AddProductAsync(model);
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        #endregion
-
-        #region Edit
-
-        [HttpGet]
-        public async Task<IActionResult> EditProduct(int productId)
+        [Helper.NoDirectAccessAttribute]
+        public async Task<IActionResult> AddOrEditProduct(int productId = 0)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return NotFound();
 
-            return View(await _uow.ProductRe.GetProductColumnsForEditProductAsync(productId,userId));
+            try
+            {
+                return productId == 0 ? View(await _uow.CategoryRe.GetAllCategoriesForAddingProduct(userId)) : View(await _uow.ProductRe.GetProductColumnsForEditProductAsync(productId, userId));
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]
+        [Helper.NoDirectAccessAttribute]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(AddOrEditProductViewModel model)
+        public async Task<IActionResult> AddOrEditProduct(AddOrEditProductViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditProduct", model) });
 
-            await _uow.ProductRe.EditProductAsync(model);
+            try
+            {
+                if (model.Id == 0)
+                {
+                    await _uow.ProductRe.AddProductAsync(model);
+                }
+                else
+                {
+                    await _uow.ProductRe.EditProductAsync(model);
+                }
 
-            return RedirectToAction(nameof(Index));
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
+            }
+
+            catch (DbUpdateConcurrencyException)
+            {
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditProduct", model) });
+            }
         }
 
         #endregion
+
+
 
         #region AddCategoryToProductCategories
 
@@ -81,14 +87,15 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         }
 
         [HttpPost]
+        [Helper.NoDirectAccessAttribute]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCategoryToProductCategories(AddCategoryToProductCategories model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddCategoryToProductCategories", model) });
 
             await _uow.CategoryRe.AddCategoryToProductCategoriesAsync(model);
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
         }
 
         #endregion
@@ -96,6 +103,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         #region Delete
 
         [HttpPost]
+        [Helper.NoDirectAccessAttribute]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
@@ -104,7 +112,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
             await _uow.ProductRe.DeleteProductAsync(productId, userId);
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
         }
 
         #endregion

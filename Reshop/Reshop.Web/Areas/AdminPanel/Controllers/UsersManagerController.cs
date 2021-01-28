@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Reshop.Application.Services;
 using Reshop.Domain.Models.User.Identity;
 using Reshop.Domain.ViewModels.User;
 using Reshop.Domain.ViewModels.User.Role;
@@ -27,19 +30,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // Extract Users Data From Database
-            var model = await _userManager.Users
-                .Select(c => new ManageUsersViewModel()
-                {
-                    Id = c.Id.ToString(),
-                    FullName = c.FullName,
-                    UserName = c.UserName,
-                    PhoneNumber = c.PhoneNumber,
-                    Address = c.Address,
-                    Email = c.Email
-                }).ToListAsync();
-
-            return View(model);
+            return View(await GetAllUsers());
         }
 
         #endregion
@@ -47,8 +38,10 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         #region Edit User
 
         [HttpGet]
-        public async Task<IActionResult> EditUser(string userId)
+        public async Task<IActionResult> EditUser(string userId = null)
         {
+
+
             // Show 404 Error When User Id is Empty
             if (string.IsNullOrEmpty(userId)) return NotFound();
 
@@ -65,20 +58,23 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
             };
-
             return View(userInformation);
+
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUser(AddOrEditUserViewModel model)
         {
             // Show Error When User Id And UserName Are Empty
-            if (string.IsNullOrEmpty(model.Id)) return NotFound();
+            if (string.IsNullOrEmpty(model.Id))
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditProduct", model) });
 
             // Find User Id
             var user = await _userManager.FindByIdAsync(model.Id);
-            if (user == null) return NotFound();
+            if (user == null)
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEditProduct", model) });
 
             // Change User Data
 
@@ -97,7 +93,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
 
             if (result.Succeeded)
-                return RedirectToAction("index");
+                return RedirectToAction(nameof(Index));
 
             // Show Errors       
             foreach (var error in result.Errors)
@@ -144,28 +140,21 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddUserToRole(AddOrRemoveUserFromRoleViewModel model)
         {
-            // Show 404 Error When Model Is Empty
-            if (model == null)
-                return NotFound();
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddUserToRole", model) });
 
-            // Find User Id By model.UserId
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null) return NotFound();
 
-
-            // Update Database
-            var result = await _userManager.AddToRolesAsync(user, model.SelectedRoles);
-
-            if (result.Succeeded)
-                return RedirectToAction("index");
-
-            // Show Errors
-            foreach (var error in result.Errors)
+            try
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "User/_BoxManageUsers", await GetAllUsers()) });
             }
-
-            return View(model);
+            catch
+            {
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddUserToRole", model) });
+            }
         }
 
         #endregion
@@ -173,52 +162,47 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         #region Remove User From Role
 
         [HttpGet]
-        public async Task<IActionResult> RemoveUserFromRole(string id, string returnUrl = null)
+        public async Task<IActionResult> RemoveUserFromRole(string userId)
         {
             // Show 404 Error When User Id is Empty
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(userId))
                 return NotFound();
 
             // Find User Id
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
 
 
             var model = new AddOrRemoveUserFromRoleViewModel()
             {
-                UserId = id,
+                UserId = userId,
                 RolesName = await _userManager.GetRolesAsync(user)
             };
 
-            ViewData["returnUrl"] = returnUrl;
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveUserFromRole(AddOrRemoveUserFromRoleViewModel model, string returnUrl = null)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveUserFromRole(AddOrRemoveUserFromRoleViewModel model)
         {
-            // Show 404 Error When Model Is Empty
-            if (model == null) return NotFound();
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "RemoveUserFromRole", model) });
 
             // Find User Id By model.UserId
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null) return NotFound();
 
-            ViewData["returnUrl"] = returnUrl;
-
-            // Remove Selected Roles
-            var result = await _userManager.RemoveFromRolesAsync(user, model.SelectedRoles);
-
-            if (result.Succeeded)
-                return RedirectToAction("Index");
-
-            // Show Errors
-            foreach (var error in result.Errors)
+            try
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                await _userManager.RemoveFromRolesAsync(user, model.SelectedRoles);
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "User/_BoxManageUsers", await GetAllUsers()) });
             }
-
-            return View(model);
+            catch
+            {
+                return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "RemoveUserFromRole", model) });
+            }
         }
 
         #endregion
@@ -247,5 +231,20 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         }
 
         #endregion
+
+
+        private async Task<IEnumerable<ManageUsersViewModel>> GetAllUsers()
+        {
+            return await _userManager.Users
+                .Select(c => new ManageUsersViewModel()
+                {
+                    Id = c.Id.ToString(),
+                    FullName = c.FullName,
+                    UserName = c.UserName,
+                    PhoneNumber = c.PhoneNumber,
+                    Address = c.Address,
+                    Email = c.Email
+                }).ToListAsync();
+        }
     }
 }
