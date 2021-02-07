@@ -49,10 +49,10 @@ jQueryAjaxDelete = form => {
                 data: new FormData(form),
                 contentType: false,
                 processData: false,
-                success: function(res) {
+                success: function (res) {
                     $("#view-all").html(res.html);
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                 }
             });
@@ -63,4 +63,39 @@ jQueryAjaxDelete = form => {
 
     //prevent default form submit event
     return false;
+}
+
+
+function pagination(pageId) {
+    $.ajax({
+        method: "GET",
+        url: "/Product/GetProductsByPage",
+        data: { pageId: pageId },
+        success: function (res) {
+            $("#products").html(res.html);
+        }
+    });
+}
+
+function SearchProduct(productName) {
+    $.ajax({
+        method: "GET",
+        url: "/product/SearchProductByFilter",
+        data: { productName: productName },
+        success: function (res) {
+            $("#products").html(res.html);
+        }
+    });
+}
+
+
+function GetCommentsOfProduct(productId, take) {
+    $.ajax({
+        method: "GET",
+        url: "/Product/GetCommentsOfProduct",
+        data: { productId: productId, take: take },
+        success: function (res) {
+            $("#showComments").html(res.html);
+        }
+    });
 }

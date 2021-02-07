@@ -1,5 +1,4 @@
-﻿@using Reshop.Application.Services.DateConvertor
-@model DetailViewModel
+﻿@model DetailViewModel
 @inject UserManager<User> UserManager;
 @{
     ViewData["Title"] = "کالا " + Model.Product.Name;
@@ -11,7 +10,7 @@
      alt="@Model.Product.Name"
      class="img-thumbnail" />
 <p class="py-5 text-justify">@Model.Product.Description</p>
-<p>قیمت : @Model.Product.Item.Price</p>
+<p>قیمت : @Model.Product.Item.Price.ToToman()</p>
 
 <dl>
     <dt>لینک کوتاه</dt>
@@ -48,38 +47,17 @@
             DateTime = DateTime.Now.ToShamsi()
         };
     }
-    <partial name="Product/AddCommentToProduct" model="addCommentToProduct" />
 
-    @foreach (var comment in Model.CommentsForProduct)
-    {
-        <div class="card">
+    @await Html.PartialAsync("Product/AddCommentToProduct",addCommentToProduct)
+    
+    
+    <button type="button" onclick="GetCommentsOfProduct(@Model.Product.Id,20)">مشاهده نظرات</button>
+    
 
-            <div class="card-body">
-                نام کاربر : @comment.FullName <br />
-
-                تاریخ : @comment.DateTime <br />
-
-                کامنت : @comment.Comment <br />
-
-                لایک : @comment.Like <br />
-
-                @*<a asp-controller="Product" asp-action="LikeTheComment" asp-route-commentId="@comment.CommentId"
-           class="btn btn-info">
-            لایک
-        </a>*@
-            </div>
-            @*@{
-                var answer = new AnswerToComment()
-                {
-                    CommentId = comment.CommentId,
-                    ProductId = Model.Product.Id
-                };
-            }
-
-            <partial name="Product/_AnswerToComment" model="answer" />*@
-        </div>
-    }
-
+    <div id="showComments">
+        @*@await Component.InvokeAsync("ProductComments", new { productId = Model.Product.Id })*@
+        @await Html.PartialAsync("Product/_CommentsOfProduct")
+    </div>
 </div>
 
 

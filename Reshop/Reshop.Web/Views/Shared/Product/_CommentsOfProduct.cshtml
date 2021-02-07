@@ -1,0 +1,34 @@
+﻿@model IEnumerable<CommentForProduct>
+
+@if (Model != null)
+{
+    @foreach (var comment in Model)
+    {
+        <div class="card">
+
+            <div class="card-body">
+                نام کاربر : @comment.FullName <br />
+
+                تاریخ : @comment.DateTime <br />
+
+                کامنت : @comment.Comment <br />
+
+                لایک : @comment.Like <br />
+
+                @*<a asp-controller="Product" asp-action="LikeTheComment" asp-route-commentId="@comment.CommentId"
+                   class="btn btn-info">
+                    لایک
+                </a>*@
+            </div>
+            @*@{
+                var answer = new AnswerToComment()
+                {
+                    CommentId = comment.CommentId,
+                    ProductId = Model.Product.Id
+                };
+            }
+
+            <partial name="Product/_AnswerToComment" model="answer" />*@
+        </div>
+    }
+}

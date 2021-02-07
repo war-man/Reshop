@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Reshop.Application.Services.DateConvertor;
+using Reshop.Application.Services.ExtensionMethods;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
@@ -24,11 +24,11 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             _context = context;
         }
 
-        public async Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1)
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1, int take = 4)
         {
-            int take = 4;
             int skip = (pageId - 1) * take;
-            int productsCount =await _context.Products.CountAsync();
+            int productsCount = await _context.Products.CountAsync();
 
             double totalPages = Math.Ceiling(1.0 * productsCount / take);
 
@@ -55,18 +55,18 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 .Select(c => c.Category)
                 .ToListAsync();
 
-            var comments = await _context.Products
-                .Where(c => c.Id == productId)
-                .SelectMany(c => c.CommentsForProduct)
-                .OrderByDescending(c => c.Comment)
-                .ToListAsync();
+            //var comments = await _context.Products
+            //    .Where(c => c.Id == productId)
+            //    .SelectMany(c => c.CommentsForProduct)
+            //    .OrderByDescending(c => c.Comment)
+            //    .ToListAsync();
 
             return new DetailViewModel()
             {
                 UserId = userId,
                 Product = product,
                 Categories = categoryOfProduct,
-                CommentsForProduct = comments
+                //CommentsForProduct = comments
             };
         }
 
@@ -79,13 +79,18 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                     .Select(c => c.Product)
                     .ToListAsync();
 
-        public async Task<IEnumerable<Product>> SearchProductByFilterAsync(string productName)
-            =>
-                await _context.Products
-                    .Include(c => c.Item)
-                    .Where(c => c.Name.Contains(productName))
-                    .AsNoTracking()
-                    .ToListAsync();
+        public async Task<ShowProductsViewModel> SearchProductByFilterAsync(string productName)
+        {
+            var product = await _context.Products
+                .Include(c => c.Item)
+                .Where(c => c.Name.Contains(productName))
+                .AsNoTracking()
+                .ToListAsync();
+            return new ShowProductsViewModel()
+            {
+                Products = product
+            };
+        }
 
         public async Task<AddOrEditProductViewModel> GetProductColumnsForEditProductAsync(int productId, string userId)
         {
@@ -277,6 +282,16 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             await _context.AddAsync(comment);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<CommentForProduct>> GetCommentsForProduct(int productId, int take = 20)
+        {
+            return await _context.Products
+                .Where(c => c.Id == productId)
+                .SelectMany(c => c.CommentsForProduct)
+                .OrderByDescending(c => c.Comment).Take(take).ToListAsync();
+
+        }
+
 
         #region GenerateShortKey
 

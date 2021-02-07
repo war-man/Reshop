@@ -1,14 +1,13 @@
 ﻿<!DOCTYPE html>
-<html lang="fa" >
+<html lang="fa">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Eshop.Web</title>
-
     <link href="~/lib/bootstrap/dist/css/bootstrap-rtl.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/Fonts/Sahel/FontSaheh.css" rel="stylesheet" />
-
+    @await RenderSectionAsync("Css", required: false)
 
 </head>
 <body class="rtl">
@@ -35,6 +34,20 @@
 
                     </ul>
                     <partial name="_LoginPartial" />
+
+
+                    <form class="form-inline my-2 my-lg-0" asp-controller="Product" asp-action="SearchProductByFilter" method="get" onsubmit="return  SearchProduct(@ViewData["ProductName"])">
+                            <input class="form-control mr-sm-2"
+                                   type="search"
+                                   value="@ViewData["ProductName"]"
+                                   name="productName"
+                                   placeholder="جستجو"
+                                   aria-label="Search" onkeyup="SearchProduct(this.value)">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">جستجو</button>
+                        </form>
+
+                    
+
                 </div>
             </div>
         </nav>
@@ -74,7 +87,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Reshop.Application.Services.DateConvertor
+namespace Reshop.Application.Services.ExtensionMethods
 {
-    public static class DateConvertor
+    public static class ExtensionMethods
     {
         public static string ToShamsi(this DateTime value)
         {
@@ -11,6 +11,11 @@ namespace Reshop.Application.Services.DateConvertor
             return pc.GetYear(value) + "/" + pc.GetMonth(value).ToString("00") + "/" +
                    pc.GetDayOfMonth(value).ToString("00") + " - " + pc.GetHour(value).ToString("00") + ":" + pc.GetMinute(value).ToString("00");
 
+        }
+
+        public static string ToToman(this decimal value)
+        {
+            return value.ToString("#,0 تومان");
         }
     }
 }

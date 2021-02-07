@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Reshop.Application.Services.DateConvertor;
+using Reshop.Application.Services.ExtensionMethods;
 using Reshop.Domain.Models.User.Cart;
 using Reshop.Domain.Services.Interfaces.User.Cart;
 using Reshop.Infrastructure.Context;

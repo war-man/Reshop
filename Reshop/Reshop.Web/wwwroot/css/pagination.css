@@ -1,0 +1,31 @@
+﻿.pagination-layer {
+    margin: 15px 0 60px;
+}
+
+    .pagination-layer a {
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+        -moz-border-radius: 100%;
+        -webkit-border-radius: 100%;
+        border: 2px solid #d8e0e6;
+        line-height: 38px;
+        font-size: 15px;
+        text-align: center;
+        line-height: 27px;
+        font-size: 16px;
+        margin: 2px;
+        background-color: #fff;
+        color: #2d3339;
+    }
+
+        .pagination-layer a:hover {
+            border: 2px solid #4cadfb;
+            color: #2196f3;
+        }
+
+a:link,
+a:hover {
+    text-decoration: none;
+    outline: 0 !important;
+}

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Services;
 using Reshop.Domain.Services.Interfaces;
 using Reshop.Infrastructure.Context;
+using Reshop.Web.Controllers.Product;
 
 namespace Reshop.Web.Controllers.User.Cart
 {
@@ -23,15 +25,16 @@ namespace Reshop.Web.Controllers.User.Cart
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int itemId,string userId)
         {
-            await _uow.CartRe.AddToCartAsync(itemId, userId);
+            try
+            {
+                await _uow.CartRe.AddToCartAsync(itemId, userId);
 
-            var product = await _uow.ProductRe.FindByIdAsync(itemId);
-
-            if (product == null) return NotFound();
-
-            Uri uri = new Uri("https://localhost:44381" + $"/Product/{product.Id}/{product.Name.Replace(" ", "-")}");
-
-            return Redirect(uri.AbsoluteUri);
+                return RedirectToAction(nameof(ShowCart));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]

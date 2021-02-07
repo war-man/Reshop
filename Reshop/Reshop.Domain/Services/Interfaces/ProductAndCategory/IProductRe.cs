@@ -11,10 +11,10 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
 {
     public interface IProductRe
     {
-        Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1);
+        Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1, int take = 4);
         Task<DetailViewModel> GetDetailOfProductAsync(int productId, string userId);
         Task<IEnumerable<Product>> ShowProductsByCategoryIdAsync(int categoryId);
-        Task<IEnumerable<Product>> SearchProductByFilterAsync(string productName);
+        Task<ShowProductsViewModel> SearchProductByFilterAsync(string productName);
         Task<AddOrEditProductViewModel> GetProductColumnsForEditProductAsync(int productId, string userId);
         Task EditProductAsync(AddOrEditProductViewModel model);
         Task AddProductAsync(AddOrEditProductViewModel model);
@@ -23,5 +23,6 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
         Task<Product> FindProductByShortKeyAsync(string key);
         Task<AddOrEditCategoryViewModel> GetAllProductsForAddingCategory();
         Task AddCommentToProduct(CommentForProduct model);
+        Task<IEnumerable<CommentForProduct>> GetCommentsForProduct(int productId, int take = 20);
     }
 }

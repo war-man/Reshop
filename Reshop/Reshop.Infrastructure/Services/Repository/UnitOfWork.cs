@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Reshop.Domain.Services.Interfaces;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
 using Reshop.Domain.Services.Interfaces.User.Cart;
