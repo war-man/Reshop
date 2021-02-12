@@ -1,9 +1,27 @@
-﻿@import url('\Fonts\Sahel\FontSaheh.css');
+﻿@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/Sahel/Sahel.eot');
+    src: url('/Fonts/Sahel/Sahel.eot?#iefix') format('embedded-opentype'), url('/Fonts/Sahel/Sahel.woff2') format('woff2'), url('/Fonts/Sahel/Sahel.woff') format('woff'), url('/Fonts/Sahel/Sahel.ttf') format('truetype');
+    font-weight: normal;
+}
 
+@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/Sahel/Sahel-Light/Sahel-Light.eot');
+    src: url('/Fonts/Sahel/Sahel-Light/Sahel-Light.eot?#iefix') format('embedded-opentype'), url('/Fonts/Sahel/Sahel-Light/Sahel-Light.woff2') format('woff2'), url('/Fonts/Sahel/Sahel-Light/Sahel-Light.woff') format('woff'), url('/Fonts/Sahel/Sahel-Light/Sahel-Light.ttf') format('truetype');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/Sahel/Sahel-Black/Sahel-Black.eot');
+    src: url('/Fonts/Sahel/Sahel-Black/Sahel-Black.eot?#iefix') format('embedded-opentype'), url('/Fonts/Sahel/Sahel-Black/Sahel-Black.woff2') format('woff2'), url('/Fonts/Sahel/Sahel-Black/Sahel-Black.woff') format('woff'), url('/Fonts/Sahel/Sahel-Black/Sahel-Black.ttf') format('truetype');
+    font-weight: 900;
+}
 
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15) !important;
 }
 
 
@@ -12,11 +30,9 @@
 # General
 --------------------------------------------------------------*/
 
-body {
-    background: #fff;
-    color: #444;
+body, html {
+    background-color: #ffffff;
     font-family: Sahel, sans-serif;
-    background-color: #fafafa;
 }
 
 main {
@@ -128,14 +144,15 @@ a {
         padding: 10px 0;
         transition: 0.3s;
         font-size: 18px;
+        border-bottom: 2px solid #fff;
         font-family: Sahel, sans-serif;
-        font-weight: 300;
     }
 
         .main-nav a:hover,
         .main-nav .active > a,
         .main-nav li:hover > a {
             color: #1bb1dc;
+            border-color: #1bb1dc;
             text-decoration: none;
         }
 
@@ -169,7 +186,6 @@ a {
     .main-nav .drop-down ul a {
         padding: 10px 20px;
         font-size: 17px;
-        font-weight: 300;
         text-transform: none;
         color: #065e77;
     }
@@ -183,7 +199,7 @@ a {
     .main-nav .drop-down > a::after {
         content: "\f107";
         font-family: FontAwesome;
-        padding-right: 10px;
+        padding-right: 5px;
     }
 
     .main-nav .drop-down:hover > a::after {
