@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Category>
 
 
-<table>
+<table class="table table-bordered">
     <thead>
     <tr>
         <th>نام</th>
@@ -22,6 +22,11 @@
                     <i class="bi bi-pencil-fill"></i> ویرایش
                 </a>
                 <a asp-action="DeleteCategory" asp-route-productId="@item.Id" class="btn btn-danger text-white">حذف</a>
+
+                <a onclick="showModal('@Url.Action("AddChildCategoryToCategory","CategoriesManager",new {categoryId = item.Id},Context.Request.Scheme)', 'افزودن زیر گروه')"
+                   class="btn btn-primary text-white">
+                    <i class="bi bi-pencil-fill"></i> افزودن زیر گروه
+                </a>
             </td>
         </tr>
     }

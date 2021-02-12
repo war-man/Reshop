@@ -1,11 +1,11 @@
 ﻿@model ShowProductsViewModel
 @{
-    ViewData["Title"] = ViewData["CategoryName"];
+    ViewData["Title"] = @ViewData["ChildCategoryName"];
 }
 
 <div class="text-center">
     <div class="text-center">
-        <h1>محصولات گروه @ViewData["CategoryName"]</h1>
+        <h1>محصولات گروه @ViewData["ChildCategoryName"]</h1>
     </div>
     <hr />
     <div id="products">
@@ -13,3 +13,4 @@
     </div>
 
 </div>
+

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ChildCategory>
+
+@{ int rowCount = 1; }
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th scope="col">نام زیر گروه</th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@rowCount</td>
+                <td>@item.Name</td>
+
+                <td>
+                    <a asp-controller="ChildCategoryManager" asp-action="AddOrEditChildCategory">افزودن زیر گروه <i class="fa fa-pencil" aria-hidden="true"></i></a>
+                    <a asp-controller="ChildCategoryManager" asp-action="AddOrEditChildCategory" asp-route-childCategoryId="@item.Id">افزودن زیر گروه <i class="fa fa-pencil" aria-hidden="true"></i></a>
+                </td>
+            </tr>
+            rowCount++;
+        }
+    </tbody>
+</table>

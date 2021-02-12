@@ -18,5 +18,14 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
         Task<Category> FindCategoryByIdAsync(int categoryId);
         Task EditCategoryAsync(AddOrEditCategoryViewModel model);
         Task DeleteCategoryAsync(int categoryId);
+
+        // --------------- child category ---------------
+
+        Task<IEnumerable<ChildCategory>> GetChildCategoriesAsync();
+        Task EditChildCategoryAsync(ChildCategory model);
+        Task AddChildCategoryAsync(ChildCategory model);
+        Task<ChildCategory> GetChildCategoryColumnsAsync(int childCategoryId);
+        Task<AddChildCategoryToCategoryViewModel> GetChildCategoriesThatCategoryDonotHaveAsync(int categoryId);
+        Task AddChildCategoryToCategory(AddChildCategoryToCategoryViewModel model);
     }
 }

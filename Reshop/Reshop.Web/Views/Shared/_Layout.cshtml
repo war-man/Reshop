@@ -4,39 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Eshop.Web</title>
+
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+
     <link href="~/lib/bootstrap/dist/css/bootstrap-rtl.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link href="~/Fonts/Sahel/FontSaheh.css" rel="stylesheet" />
-    @await RenderSectionAsync("Css", required: false)
+
+    <link href="~/css/site.css" rel="stylesheet" />
 
 </head>
 <body class="rtl">
-    <header>
-        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Product" asp-action="Index">Eshop.Web</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Cart" asp-action="ShowCart">سبد خرید</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="AdminPanel" asp-controller="AdminsPanel" asp-action="Index">پنل مدیریت</a>
-                        </li>
-                        <partial name="Category/DropDown/_CategoriesDropDown" />
 
-                    </ul>
-                    <partial name="_LoginPartial" />
+    @*<header>
+            <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Product" asp-action="Index">Eshop.Web</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="ShowCart">سبد خرید</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="AdminPanel" asp-controller="AdminsPanel" asp-action="Index">پنل مدیریت</a>
+                            </li>
+                            <partial name="Category/DropDown/_CategoriesDropDown" />
+
+                        </ul>
+                        <partial name="_LoginPartial" />
 
 
-                    <form class="form-inline my-2 my-lg-0" asp-controller="Product" asp-action="SearchProductByFilter" method="get" onsubmit="return  SearchProduct(@ViewData["ProductName"])">
+                        <form class="form-inline my-2 my-lg-0" asp-controller="Product" asp-action="SearchProductByFilter" method="get" onsubmit="return  SearchProduct(@ViewData["ProductName"])">
                             <input class="form-control mr-sm-2"
                                    type="search"
                                    value="@ViewData["ProductName"]"
@@ -46,13 +49,40 @@
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">جستجو</button>
                         </form>
 
-                    
 
+
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </header>*@
+
+
+
+    <button type="button" class="mobile-nav-toggle d-lg-none"><i class="fa fa-bars"></i></button>
+
+    <header id="header" class="fixed-top header-transparent">
+
+
+        <div class="container d-flex align-items-center">
+
+            <h1 class="logo"><a asp-controller="Product" asp-action="Index">Reshop</a></h1>
+
+
+            <nav class="main-nav d-none d-lg-block">
+                <ul>
+                    <li><a asp-controller="Product" asp-action="Index">خانه</a></li>
+                    @await Html.PartialAsync("Category/DropDown/_CategoriesDropDown")
+                    <li><a asp-area="AdminPanel" asp-controller="AdminsPanel" asp-action="Index">پنل مدیریت</a></li>
+                </ul>
+            </nav>
+
+
+        </div>
     </header>
-    <div class="container">
+
+
+
+    <div class="container" style="margin-top: 100px;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -85,9 +115,11 @@
             &copy; 2020 - Eshop.Web - <a asp-controller="Product" asp-action="Index">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210211094804_chilscategory")]
+    partial class chilscategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,21 +277,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("ProductToCategories");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ProductToChildCategory", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChildCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "ChildCategoryId");
-
-                    b.HasIndex("ChildCategoryId");
-
-                    b.ToTable("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>
@@ -559,25 +546,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ProductToChildCategory", b =>
-                {
-                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.ChildCategory", "ChildCategory")
-                        .WithMany("ProductToChildCategories")
-                        .HasForeignKey("ChildCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.Product", "Product")
-                        .WithMany("ProductToChildCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChildCategory");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>
                 {
                     b.HasOne("Reshop.Domain.Models.User.Identity.User", "User")
@@ -616,8 +584,6 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ChildCategory", b =>
                 {
                     b.Navigation("ChildCategoryToCategories");
-
-                    b.Navigation("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.Item", b =>
@@ -632,8 +598,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ProductToCategories");
-
-                    b.Navigation("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>

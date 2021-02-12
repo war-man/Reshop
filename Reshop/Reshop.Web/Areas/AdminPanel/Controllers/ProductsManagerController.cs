@@ -25,7 +25,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int pageId = 1)
         {
-            return View(await _uow.ProductRe.GetAllProductsAsync(pageId));
+            return View(await _uow.ProductRe.GetProductsWithPagingAsync(pageId));
         }
 
         #region add or edit product
@@ -39,7 +39,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
             try
             {
-                return productId == 0 ? View(await _uow.CategoryRe.GetAllCategoriesForAddingProduct(userId)) : View(await _uow.ProductRe.GetProductColumnsForEditProductAsync(productId, userId));
+                return productId == 0 ? View(await _uow.CategoryRe.GetAllCategoriesForAddingProduct(userId)) : View(await _uow.ProductRe.GetProductColumnsForEditAsync(productId, userId));
             }
             catch
             {
@@ -65,7 +65,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
                     await _uow.ProductRe.EditProductAsync(model);
                 }
 
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetProductsWithPagingAsync()) });
             }
 
             catch (DbUpdateConcurrencyException)
@@ -95,7 +95,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
             await _uow.CategoryRe.AddCategoryToProductCategoriesAsync(model);
 
-            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetProductsWithPagingAsync()) });
         }
 
         #endregion
@@ -112,7 +112,7 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
             await _uow.ProductRe.DeleteProductAsync(productId, userId);
 
-            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetAllProductsAsync()) });
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_BoxManageProducts", await _uow.ProductRe.GetProductsWithPagingAsync()) });
         }
 
         #endregion

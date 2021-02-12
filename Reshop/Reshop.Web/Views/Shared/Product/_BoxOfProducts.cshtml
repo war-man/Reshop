@@ -24,31 +24,34 @@
     }
 </div>
 
-<hr />
+@if (Model.PageCount > 1)
+{
+    <hr />
 
-<nav class=" mt-3">
-    <ul class="pagination justify-content-center">
-        <li class="page-item @(((Model.PageId) -1) == 0 ? "disabled":"")">
-            <a class="page-link" onclick="pagination('@((Model.PageId) -1)')" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-            </a>
-        </li>
-
-        @for (var i = 1; i <= Model.PageCount; i++)
-        {
-            <li class="page-item @(i== Model.PageId? "active":"")">
-                <a class="page-link" onclick="pagination('@i')">@i</a>
+    <nav class=" mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(((Model.PageId) -1) == 0 ? "disabled":"")">
+                <a class="page-link" onclick="pagination('@((Model.PageId) -1)')" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
             </li>
-        }
 
-        <li class="page-item @(Model.PageId == (int)Model.PageCount ? "disabled":"")">
-            <a class="page-link" onclick="pagination('@((Model.PageId) +1)')" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-            </a>
-        </li>
+            @for (var i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item @(i== Model.PageId? "active":"")">
+                    <a class="page-link" onclick="pagination('@i')">@i</a>
+                </li>
+            }
 
-    </ul>
-</nav>
+            <li class="page-item @(Model.PageId == (int)Model.PageCount ? "disabled":"")">
+                <a class="page-link" onclick="pagination('@((Model.PageId) +1)')" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}
 

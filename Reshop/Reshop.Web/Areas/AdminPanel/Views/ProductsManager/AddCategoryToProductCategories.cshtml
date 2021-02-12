@@ -15,23 +15,42 @@ else
 
         <input type="hidden" asp-for="ProductId" />
 
-        <div class="row mb-2">
-            <div class="col-md-11 card" style="margin-right: 33px">
 
-                @if (Model.Categories != null)
-                {
-                    <div class="card-body pre-scrollable">
-                        @foreach (var item in Model.Categories)
-                        {
-                            <div class="form-group col-md-6">
-                                <input type="checkbox" name="SelectedCategories" value="@item.Id" /> @item.Name
-                            </div>
-                        }
-                    </div>
 
-                }
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    @if (Model.Categories != null)
+                    {
+                        <div class="card-body pre-scrollable">
+                            @foreach (var item in Model.Categories)
+                            {
+                                <div class="form-group col-md-6">
+                                    <input type="checkbox" name="SelectedCategories" value="@item.Id" /> @item.Name
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    @if (Model.ChildCategories != null)
+                    {
+                        <div class="card-body pre-scrollable">
+                            @foreach (var item in Model.ChildCategories)
+                            {
+                                <div class="form-group col-md-6">
+                                    <input type="checkbox" name="SelectedChildCategories" value="@item.Id" /> @item.Name
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+
         <div class="row card-footer">
             <div class="col-md-6">
                 <input type="submit" value="افزودن گروه" class="btn btn-success btn-block" />

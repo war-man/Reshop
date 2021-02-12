@@ -24,60 +24,108 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             _context = context;
         }
 
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1, int take = 4)
+        public async Task<ShowProductsViewModel> GetProductsWithPagingAsync(int pageId = 1, int take = 4)
         {
-            int skip = (pageId - 1) * take;
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
             int productsCount = await _context.Products.CountAsync();
 
-            double totalPages = Math.Ceiling(1.0 * productsCount / take);
+            double totalPages = Math.Ceiling(1.0 * productsCount / take); // get count of pages
 
-            var product = await _context.Products.Include(c => c.Item).OrderBy(c => c.Id)
+
+            var products = await _context.Products.Include(c => c.Item).OrderBy(c => c.Id)
                 .Skip(skip).Take(take).ToListAsync();
 
             return new ShowProductsViewModel()
             {
-                Products = product,
+                Products = products,
                 PageCount = totalPages,
                 PageId = pageId
             };
         }
 
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+            return await _context.Products.ToListAsync();
+        }
+
         public async Task<DetailViewModel> GetDetailOfProductAsync(int productId, string userId)
         {
+            // get selected product by its item
             var product = await _context.Products
                 .Include(c => c.Item)
                 .FirstOrDefaultAsync(c => c.Id == productId);
 
+            // get product categories
             var categoryOfProduct = await _context.Products
                 .Where(c => c.Id == productId)
                 .SelectMany(c => c.ProductToCategories)
                 .Select(c => c.Category)
                 .ToListAsync();
 
-            //var comments = await _context.Products
-            //    .Where(c => c.Id == productId)
-            //    .SelectMany(c => c.CommentsForProduct)
-            //    .OrderByDescending(c => c.Comment)
-            //    .ToListAsync();
-
             return new DetailViewModel()
             {
                 UserId = userId,
                 Product = product,
                 Categories = categoryOfProduct,
-                //CommentsForProduct = comments
             };
         }
 
-        public async Task<IEnumerable<Product>> ShowProductsByCategoryIdAsync(int categoryId)
-            =>
-                await _context.ProductToCategories
-                    .Where(c => c.CategoryId == categoryId)
-                    .Include(c => c.Product)
-                    .ThenInclude(c => c.Item)
-                    .Select(c => c.Product)
-                    .ToListAsync();
+        public async Task<ShowProductsViewModel> ShowProductsByCategoryIdAsync(int categoryId, int take = 20, int pageId = 1)
+        {
+            int skip = (pageId - 1) * take;
+
+            int productsCount = await _context.ProductToCategories
+                .Where(c => c.CategoryId == categoryId)
+                .Select(c => c.Product).CountAsync();
+
+            double totalPages = Math.Ceiling(1.0 * productsCount / take); // get count of pages
+
+
+
+
+            var products = await _context.ProductToCategories
+                .Where(c => c.CategoryId == categoryId)
+                .Include(c => c.Product)
+                .ThenInclude(c => c.Item)
+                .Select(c => c.Product)
+                .OrderByDescending(c => c.Id)
+                .Skip(skip).Take(take).ToListAsync();
+
+            return new ShowProductsViewModel()
+            {
+                Products = products,
+                PageId = pageId,
+                PageCount = totalPages
+            };
+        }
+
+        public async Task<ShowProductsViewModel> ShowProductsByChildCategoryId(int childCategoryId, int take = 20, int pageId = 1)
+        {
+            int skip = (pageId - 1) * take;
+
+            int productsCount = await _context.ProductToChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.Product).CountAsync();
+
+            double totalPages = Math.Ceiling(1.0 * productsCount / take); // get count of pages
+
+            var products = await _context.ProductToChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .Include(c => c.Product)
+                .ThenInclude(c => c.Item)
+                .Select(c => c.Product)
+                .OrderByDescending(c=> c.Id)
+                .Skip(skip).Take(take).ToListAsync();
+
+            return new ShowProductsViewModel()
+            {
+                Products = products,
+                PageId = pageId,
+                PageCount = totalPages
+            };
+
+        }
 
         public async Task<ShowProductsViewModel> SearchProductByFilterAsync(string productName)
         {
@@ -92,9 +140,8 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             };
         }
 
-        public async Task<AddOrEditProductViewModel> GetProductColumnsForEditProductAsync(int productId, string userId)
+        public async Task<AddOrEditProductViewModel> GetProductColumnsForEditAsync(int productId, string userId)
         {
-            // get product categories
             var categories = await _context.Products
                 .Where(c => c.Id == productId)
                 .SelectMany(c => c.ProductToCategories)
@@ -134,6 +181,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             item.QuantityInStock = model.QuantityInStock;
 
 
+            // add category to product
             if (model.SelectedCategories != null)
             {
                 foreach (var productToCategory in model.SelectedCategories
@@ -149,6 +197,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
             await _context.SaveChangesAsync();
 
+            // add picture to product
             if (model.Picture?.Length > 0)
             {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
@@ -169,7 +218,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 Price = model.Price,
                 QuantityInStock = model.QuantityInStock
             };
-            // add item
+
             await _context.AddAsync(item);
             await _context.SaveChangesAsync();
 
@@ -182,16 +231,16 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 ShortKey = GenerateShortKey(),
                 DateTime = DateTime.Now.ToShamsi()
             };
-            // add product 
+
             await _context.AddAsync(pro);
             await _context.SaveChangesAsync();
 
-            // add product itemId
+
             pro.ItemId = pro.Id;
             pro.ImageId = pro.Id;
             await _context.SaveChangesAsync();
 
-            // add picture
+
             if (model.Picture?.Length > 0)
             {
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
@@ -203,7 +252,6 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 await model.Picture.CopyToAsync(stream);
             }
 
-            // add product selected categories
             if (model.SelectedCategories != null)
             {
                 foreach (var productToCategory in model.SelectedCategories
@@ -228,6 +276,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             _context.Items.Remove(item);
             _context.Products.Remove(product);
 
+
             if (productToCategory != null)
             {
                 _context.ProductToCategories.Remove(productToCategory);
@@ -235,6 +284,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
             await _context.SaveChangesAsync();
 
+            // delete product picture
             string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                 "wwwroot",
                 "images",
@@ -283,7 +333,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CommentForProduct>> GetCommentsForProduct(int productId, int take = 20)
+        public async Task<IEnumerable<CommentForProduct>> GetCommentsOfProduct(int productId, int take = 20)
         {
             return await _context.Products
                 .Where(c => c.Id == productId)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -36,14 +37,16 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
         }
 
         public async Task<IEnumerable<ShowCategoryViewModel>> GetCategoriesForShowAsync()
-        =>
-            await _context.Categories
+        {
+            return await _context.Categories
                 .Select(c => new ShowCategoryViewModel()
                 {
                     CategoryId = c.Id,
-                    Name = c.Name,
-                    ProductCount = _context.ProductToCategories.Count(g => g.CategoryId == c.Id)
+                    CategoryName = c.Name,
+                    ChildCategories = _context.ChildCategoryToCategories.Where(g => g.CategoryId == c.Id)
+                        .Select(c => c.ChildCategory).ToList(), // get child categories of category
                 }).ToListAsync();
+        }
 
         public async Task<AddCategoryToProductCategories> GetCategoriesThatProductDonotHaveAsync(int id)
         {
@@ -56,10 +59,19 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 .Where(c => !productCategories.Contains(c))
                 .ToListAsync();
 
+            var productChildCategories = await _context.Products
+                .Where(c => c.Id == id)
+                .SelectMany(c => c.ProductToChildCategories)
+                .Select(c => c.ChildCategory).ToListAsync();
+
+            var childCategories = await _context.ChildCategories
+                .Where(c => !productChildCategories.Contains(c)).ToListAsync();
+
             return new AddCategoryToProductCategories()
             {
                 ProductId = id,
-                Categories = categories
+                Categories = categories,
+                ChildCategories = childCategories
             };
         }
 
@@ -72,7 +84,17 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                     CategoryId = i
                 }))
             {
-                await _context.AddAsync(productToCategory);
+                 await _context.AddAsync(productToCategory);
+            }
+
+            foreach (var child in model.SelectedChildCategories)
+            {
+                var productToChildCategory = new ProductToChildCategory()
+                {
+                    ProductId = model.ProductId,
+                    ChildCategoryId = child
+                };
+                await _context.AddAsync(productToChildCategory);
             }
 
             await _context.SaveChangesAsync();
@@ -131,7 +153,7 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
         public async Task EditCategoryAsync(AddOrEditCategoryViewModel model)
         {
-            var category = await FindCategoryByIdAsync(model.CategoryId);
+            var category = await _context.Categories.FindAsync(model.CategoryId);
 
             category.Name = model.CategoryName;
             category.Description = model.CategoryDescription;
@@ -147,9 +169,9 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                     };
                     _context.Remove(products);
                 }
-
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteCategoryAsync(int categoryId)
@@ -161,6 +183,93 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
 
             if (productToCategory != null)
                 _context.Remove(productToCategory);
+
+            await _context.SaveChangesAsync();
+        }
+
+        // ------------- child category -------------
+
+        public async Task<IEnumerable<ChildCategory>> GetChildCategoriesAsync()
+        {
+            return await _context.ChildCategories.ToListAsync();
+        }
+
+        public async Task EditChildCategoryAsync(ChildCategory model)
+        {
+            var childCategory = await _context.ChildCategories.FindAsync(model.Id);
+
+            try
+            {
+                childCategory.Name = model.Name;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        public async Task AddChildCategoryAsync(ChildCategory model)
+        {
+            try
+            {
+                var childCategory = new ChildCategory()
+                {
+                    Name = model.Name
+                };
+
+                await _context.ChildCategories.AddAsync(childCategory);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<ChildCategory> GetChildCategoryColumnsAsync(int childCategoryId)
+        {
+            var childCategory = await _context.ChildCategories.FindAsync(childCategoryId);
+
+            return new ChildCategory()
+            {
+                Id = childCategory.Id,
+                Name = childCategory.Name
+            };
+        }
+
+        public async Task<AddChildCategoryToCategoryViewModel> GetChildCategoriesThatCategoryDonotHaveAsync(int categoryId)
+        {
+            var childCategoriesOfCategory = await _context.Categories
+                .Where(c => c.Id == categoryId)
+                .SelectMany(c => c.ChildCategoryToCategories)
+                .Select(c => c.ChildCategory).ToListAsync();
+
+            var childCategories = await _context.ChildCategories
+                .Where(c => !childCategoriesOfCategory.Contains(c))
+                .ToListAsync();
+
+            return new AddChildCategoryToCategoryViewModel()
+            {
+                CategoryId = categoryId,
+                ChildCategories = childCategories
+            };
+        }
+
+        public async Task AddChildCategoryToCategory(AddChildCategoryToCategoryViewModel model)
+        {
+            foreach (var productToCategory in model.SelectedChildCategories
+                .Select(i => new ChildCategoryToCategory()
+                {
+                    CategoryId = model.CategoryId,
+                    ChildCategoryId = i
+                }))
+            {
+                await _context.AddAsync(productToCategory);
+            }
 
             await _context.SaveChangesAsync();
         }

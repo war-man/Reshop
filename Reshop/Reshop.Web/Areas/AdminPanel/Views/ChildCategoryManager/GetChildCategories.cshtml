@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ChildCategory>
+@{
+    ViewData["Title"] = "GetChildCategories";
+}
+
+
+
+<a onclick="showModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager", null, Context.Request.Scheme)', 'زیر گروه جدید')" class="col-2 btn btn-success btn-block text-white">
+    افزودن زیر گروه
+</a>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-danger" style="margin-top: 15px">
+        گروهی یافت نشد
+    </div>
+}
+else
+{
+    <div id="view-all-childCategories">
+        @await Html.PartialAsync("Category/_BoxManageChildCategories", Model);
+    </div>
+}
+
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

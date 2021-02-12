@@ -11,11 +11,13 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
 {
     public interface IProductRe
     {
-        Task<ShowProductsViewModel> GetAllProductsAsync(int pageId = 1, int take = 4);
+        Task<ShowProductsViewModel> GetProductsWithPagingAsync(int pageId = 1, int take = 4);
+        Task<IEnumerable<Product>> GetProducts();
         Task<DetailViewModel> GetDetailOfProductAsync(int productId, string userId);
-        Task<IEnumerable<Product>> ShowProductsByCategoryIdAsync(int categoryId);
+        Task<ShowProductsViewModel> ShowProductsByCategoryIdAsync(int categoryId, int take = 20, int pageId = 1);
+        Task<ShowProductsViewModel> ShowProductsByChildCategoryId(int childCategoryId, int take = 20, int pageId = 1);
         Task<ShowProductsViewModel> SearchProductByFilterAsync(string productName);
-        Task<AddOrEditProductViewModel> GetProductColumnsForEditProductAsync(int productId, string userId);
+        Task<AddOrEditProductViewModel> GetProductColumnsForEditAsync(int productId, string userId);
         Task EditProductAsync(AddOrEditProductViewModel model);
         Task AddProductAsync(AddOrEditProductViewModel model);
         Task DeleteProductAsync(int productId, string userId);
@@ -23,6 +25,6 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
         Task<Product> FindProductByShortKeyAsync(string key);
         Task<AddOrEditCategoryViewModel> GetAllProductsForAddingCategory();
         Task AddCommentToProduct(CommentForProduct model);
-        Task<IEnumerable<CommentForProduct>> GetCommentsForProduct(int productId, int take = 20);
+        Task<IEnumerable<CommentForProduct>> GetCommentsOfProduct(int productId, int take = 20);
     }
 }

@@ -22,7 +22,7 @@ namespace Reshop.Web.Controllers.Product
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _uow.ProductRe.GetAllProductsAsync());
+            return View(await _uow.ProductRe.GetProductsWithPagingAsync());
         }
 
         [Authorize]
@@ -42,6 +42,15 @@ namespace Reshop.Web.Controllers.Product
             ViewData["CategoryName"] = categoryName;
 
             return View(await _uow.ProductRe.ShowProductsByCategoryIdAsync(categoryId));
+        }
+
+        [HttpGet]
+        [Route("ChildCategory/{childCategoryId}/{childCategoryName}")]
+        public async Task<IActionResult> ShowProductsByChildCategoryId(int childCategoryId, string childCategoryName)
+        {
+            ViewData["ChildCategoryName"] = childCategoryName;
+
+            return View(await _uow.ProductRe.ShowProductsByChildCategoryId(childCategoryId));
         }
 
         [HttpGet]
@@ -68,7 +77,7 @@ namespace Reshop.Web.Controllers.Product
             {
                 await _uow.ProductRe.AddCommentToProduct(model);
 
-                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_CommentsOfProduct", _uow.ProductRe.GetCommentsForProduct(model.ProductId)) });
+                return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Product/_CommentsOfProduct", _uow.ProductRe.GetCommentsOfProduct(model.ProductId)) });
             }
             catch (Exception)
             {
@@ -100,19 +109,19 @@ namespace Reshop.Web.Controllers.Product
         [HttpGet]
         public async Task<IActionResult> GetProductsByPage(int pageId)
         {
-            return Json(new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.GetAllProductsAsync(pageId)) });
+            return Json(new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.GetProductsWithPagingAsync(pageId)) });
         }
 
         public async Task<IActionResult> SearchProductByFilter(string productName)
         {
             ViewData["productName"] = productName;
 
-            return Json(string.IsNullOrEmpty(productName) ? new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.GetAllProductsAsync()) } : new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.SearchProductByFilterAsync(productName)) });
+            return Json(string.IsNullOrEmpty(productName) ? new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.GetProductsWithPagingAsync()) } : new { html = Helper.RenderRazorViewToString(this, "Product/_BoxOfProducts", await _uow.ProductRe.SearchProductByFilterAsync(productName)) });
         }
 
         public async Task<IActionResult> GetCommentsOfProduct(int productId, int take = 20)
         {
-            return Json(new { html = Helper.RenderRazorViewToString(this, "Product/_CommentsOfProduct", await _uow.ProductRe.GetCommentsForProduct(productId,take)) });
+            return Json(new { html = Helper.RenderRazorViewToString(this, "Product/_CommentsOfProduct", await _uow.ProductRe.GetCommentsOfProduct(productId,take)) });
         }
     }
 }

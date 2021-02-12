@@ -23,6 +23,9 @@ namespace Reshop.Infrastructure.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<CommentForProduct> CommentsForProduct { get; set; }
+        public DbSet<ChildCategory> ChildCategories { get; set; }
+        public DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        public DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,8 +33,11 @@ namespace Reshop.Infrastructure.Context
             builder.Entity<ProductToCategory>()
                 .HasKey(t => new { t.ProductId, t.CategoryId });
 
+            builder.Entity<ChildCategoryToCategory>()
+                .HasKey(t => new { t.CategoryId, t.ChildCategoryId });
 
-
+            builder.Entity<ProductToChildCategory>()
+                .HasKey(t => new { t.ProductId, t.ChildCategoryId });
 
             builder.Entity<Item>(i =>
             {

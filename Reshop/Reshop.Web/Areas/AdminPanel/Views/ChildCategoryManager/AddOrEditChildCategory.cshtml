@@ -1,0 +1,43 @@
+﻿@model ChildCategory
+@{
+    Layout = null;
+}
+
+
+<form asp-action="AddOrEditChildCategory" method="post" enctype="multipart/form-data" onsubmit="return AddChildCategory(this)" autocomplete="off">
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+
+    <div class="row mb-2">
+
+
+        <div class="card-body">
+            <div class="row">
+                <div class="form-group col-md-12 ">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row card-footer">
+                <div class=" col-md-6">
+                    <input type="submit" value="افزودن گروه" class="btn btn-success btn-block" />
+                </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" aria-label="Close">
+                        خروج
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</form>
+
+
+

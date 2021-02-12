@@ -17,7 +17,7 @@ namespace Reshop.Web.Components
 
         public async Task<IViewComponentResult> InvokeAsync(int productId, int take = 20)
         {
-            return View("/Views/Shared/Product/_CommentsOfProduct.cshtml", await _uow.ProductRe.GetCommentsForProduct(productId));
+            return View("/Views/Shared/Product/_CommentsOfProduct.cshtml", await _uow.ProductRe.GetCommentsOfProduct(productId));
         }
     }
 }

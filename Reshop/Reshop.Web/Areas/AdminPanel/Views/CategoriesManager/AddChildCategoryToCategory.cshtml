@@ -1,0 +1,47 @@
+﻿@model AddChildCategoryToCategoryViewModel
+@{
+    Layout = null;
+}
+@if (Model == null)
+{
+    <div class="alert alert-danger">
+        هیچ مقامی یافت نشد
+    </div>
+}
+else
+{
+    <form asp-action="AddChildCategoryToCategory" method="post" enctype="multipart/form-data" onsubmit="return AddProductAjaxPost(this);" autocomplete="off">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <input type="hidden" asp-for="CategoryId" />
+
+        <div class="row mb-2">
+            <div class="col-md-11 card" style="margin-right: 33px">
+
+                @if (Model.ChildCategories != null)
+                {
+                    <div class="card-body pre-scrollable">
+                        @foreach (var item in Model.ChildCategories)
+                        {
+                            <div class="form-group col-md-6">
+                                <input type="checkbox" name="SelectedChildCategories" value="@item.Id" /> @item.Name
+                            </div>
+                        }
+                    </div>
+
+                }
+            </div>
+        </div>
+        <div class="row card-footer">
+            <div class="col-md-6">
+                <input type="submit" value="افزودن گروه" class="btn btn-success btn-block" />
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" aria-label="Close">
+                    خروج
+                </button>
+            </div>
+        </div>
+
+    </form>
+}

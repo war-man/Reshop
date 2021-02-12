@@ -59,8 +59,6 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
 
         #endregion
 
-
-
         #region Delete
 
         [HttpPost]
@@ -73,5 +71,22 @@ namespace Reshop.Web.Areas.AdminPanel.Controllers
         }
 
         #endregion
+
+        [HttpGet]
+        public async Task<IActionResult> AddChildCategoryToCategory(int categoryId)
+        {
+            return View(await _uow.CategoryRe.GetChildCategoriesThatCategoryDonotHaveAsync(categoryId));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddChildCategoryToCategory(AddChildCategoryToCategoryViewModel model)
+        {
+            if (!ModelState.IsValid) return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddChildCategoryToCategory", model) });
+
+            await _uow.CategoryRe.AddChildCategoryToCategory(model);
+
+            return Json(new { isValid = true, html = Helper.RenderRazorViewToString(this, "Category/_BoxManageCategories", await _uow.CategoryRe.GetAllCategories()) });
+        }
     }
 }

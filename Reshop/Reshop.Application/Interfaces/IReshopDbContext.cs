@@ -13,5 +13,8 @@ namespace Reshop.Application.Interfaces
         DbSet<Order> Orders { get; set; }
         DbSet<OrderDetail> OrderDetails { get; set; }
         DbSet<CommentForProduct> CommentsForProduct { get; set; }
+        DbSet<ChildCategory> ChildCategories { get; set; }
+        DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
     }
 }

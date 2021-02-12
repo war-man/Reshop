@@ -26,6 +26,7 @@ namespace Reshop.Domain.Models.ProductAndCategory
 
 
         public ICollection<ProductToCategory> ProductToCategories { get; set; }
+        public ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
         public Item Item { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public IList<CommentForProduct> CommentsForProduct { get; set; }
