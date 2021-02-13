@@ -140,7 +140,7 @@ a {
     .main-nav a {
         display: block;
         position: relative;
-        color: #413e66;
+        color: black;
         padding: 10px 0;
         transition: 0.3s;
         font-size: 18px;

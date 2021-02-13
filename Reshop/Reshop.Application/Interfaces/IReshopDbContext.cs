@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Models.User.Cart;
+using Reshop.Domain.Models.User.Comment;
 
 namespace Reshop.Application.Interfaces
 {
@@ -16,5 +17,6 @@ namespace Reshop.Application.Interfaces
         DbSet<ChildCategory> ChildCategories { get; set; }
         DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
         DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
+        DbSet<AnswerToComment> AnswerToComments { get; set; }
     }
 }

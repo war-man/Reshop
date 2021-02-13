@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20210114171408_edit2")]
-    partial class edit2
+    [Migration("20210213194650_tables")]
+    partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -142,40 +142,35 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.CommentForProduct", b =>
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ChildCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DateTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Like")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.ToTable("ChildCategories");
+                });
 
-                    b.ToTable("CommentsForProduct");
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ChildCategoryToCategory", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChildCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "ChildCategoryId");
+
+                    b.HasIndex("ChildCategoryId");
+
+                    b.ToTable("ChildCategoryToCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.Item", b =>
@@ -248,6 +243,21 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ProductToCategories");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ProductToChildCategory", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChildCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "ChildCategoryId");
+
+                    b.HasIndex("ChildCategoryId");
+
+                    b.ToTable("ProductToChildCategories");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -302,6 +312,77 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Models.User.Comment.AnswerToComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("AnswerComment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DateTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Like")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("AnswerToComment");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Models.User.Comment.CommentForProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DateTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Like")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CommentsForProduct");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.User.Identity.Role", b =>
@@ -455,15 +536,23 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.CommentForProduct", b =>
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ChildCategoryToCategory", b =>
                 {
-                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.Product", "Product")
-                        .WithMany("CommentsForProduct")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.Category", "Category")
+                        .WithMany("ChildCategoryToCategories")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.ChildCategory", "ChildCategory")
+                        .WithMany("ChildCategoryToCategories")
+                        .HasForeignKey("ChildCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("ChildCategory");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.Product", b =>
@@ -496,6 +585,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ProductToChildCategory", b =>
+                {
+                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.ChildCategory", "ChildCategory")
+                        .WithMany("ProductToChildCategories")
+                        .HasForeignKey("ChildCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.Product", "Product")
+                        .WithMany("ProductToChildCategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChildCategory");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>
                 {
                     b.HasOne("Reshop.Domain.Models.User.Identity.User", "User")
@@ -524,9 +632,40 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Models.User.Comment.AnswerToComment", b =>
+                {
+                    b.HasOne("Reshop.Domain.Models.User.Comment.CommentForProduct", "CommentForProduct")
+                        .WithMany("AnswersToComment")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CommentForProduct");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Models.User.Comment.CommentForProduct", b =>
+                {
+                    b.HasOne("Reshop.Domain.Models.ProductAndCategory.Product", "Product")
+                        .WithMany("CommentsForProduct")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.Category", b =>
                 {
+                    b.Navigation("ChildCategoryToCategories");
+
                     b.Navigation("ProductToCategory");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.ChildCategory", b =>
+                {
+                    b.Navigation("ChildCategoryToCategories");
+
+                    b.Navigation("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.ProductAndCategory.Item", b =>
@@ -541,11 +680,18 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ProductToCategories");
+
+                    b.Navigation("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.User.Cart.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Models.User.Comment.CommentForProduct", b =>
+                {
+                    b.Navigation("AnswersToComment");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Models.User.Identity.User", b =>

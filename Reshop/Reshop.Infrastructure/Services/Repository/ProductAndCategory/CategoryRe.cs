@@ -108,7 +108,6 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                 Description = model.CategoryDescription
             };
             await _context.Categories.AddAsync(ca);
-            await _context.SaveChangesAsync();
 
             if (model.SelectedProducts != null)
             {
@@ -121,8 +120,9 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
                     };
                     await _context.AddAsync(productToCategory);
                 }
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<AddOrEditCategoryViewModel> GetCategoryColumnsWithItsProductsAsync(int categoryId)

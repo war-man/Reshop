@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Reshop.Domain.Models.User.Cart;
+using Reshop.Domain.Models.User.Comment;
 
 namespace Reshop.Domain.Models.ProductAndCategory
 {
@@ -29,6 +30,6 @@ namespace Reshop.Domain.Models.ProductAndCategory
         public ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
         public Item Item { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
-        public IList<CommentForProduct> CommentsForProduct { get; set; }
+        public ICollection<CommentForProduct> CommentsForProduct { get; set; }
     }
 }

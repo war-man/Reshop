@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Reshop.Application.Interfaces;
 using Reshop.Domain.Models.ProductAndCategory;
 using Reshop.Domain.Models.User.Cart;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.Models.User.Identity;
 
 namespace Reshop.Infrastructure.Context
@@ -26,6 +27,7 @@ namespace Reshop.Infrastructure.Context
         public DbSet<ChildCategory> ChildCategories { get; set; }
         public DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
         public DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
+        public DbSet<AnswerToComment> AnswerToComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

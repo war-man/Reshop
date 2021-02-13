@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reshop.Domain.Models.ProductAndCategory;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
 using Reshop.Domain.ViewModels.ProductAndCategory.Product;
 
@@ -26,5 +27,6 @@ namespace Reshop.Domain.Services.Interfaces.ProductAndCategory
         Task<AddOrEditCategoryViewModel> GetAllProductsForAddingCategory();
         Task AddCommentToProduct(CommentForProduct model);
         Task<IEnumerable<CommentForProduct>> GetCommentsOfProduct(int productId, int take = 20);
+        Task AnswerToComment(AnswerToComment model);
     }
 }

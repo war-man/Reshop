@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Reshop.Domain.Models.ProductAndCategory;
+using Reshop.Domain.Models.User.Comment;
 
 namespace Reshop.Domain.ViewModels.ProductAndCategory.Product
 {

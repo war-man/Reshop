@@ -63,6 +63,19 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChildCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChildCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -189,7 +202,7 @@ namespace Reshop.Infrastructure.Migrations
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsFinally = table.Column<bool>(type: "bit", nullable: false),
                     UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -205,6 +218,30 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChildCategoryToCategories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    ChildCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChildCategoryToCategories", x => new { x.CategoryId, x.ChildCategoryId });
+                    table.ForeignKey(
+                        name: "FK_ChildCategoryToCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChildCategoryToCategories_ChildCategories_ChildCategoryId",
+                        column: x => x.ChildCategoryId,
+                        principalTable: "ChildCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -214,7 +251,8 @@ namespace Reshop.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     ShortKey = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     ItemId = table.Column<int>(type: "int", nullable: false),
-                    ImageId = table.Column<int>(type: "int", nullable: false)
+                    ImageId = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -223,6 +261,30 @@ namespace Reshop.Infrastructure.Migrations
                         name: "FK_Products_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentsForProduct",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Like = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentsForProduct", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentsForProduct_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -279,6 +341,59 @@ namespace Reshop.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductToChildCategories",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ChildCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductToChildCategories", x => new { x.ProductId, x.ChildCategoryId });
+                    table.ForeignKey(
+                        name: "FK_ProductToChildCategories_ChildCategories_ChildCategoryId",
+                        column: x => x.ChildCategoryId,
+                        principalTable: "ChildCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductToChildCategories_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnswerToComment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AnswerComment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Like = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnswerToComment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AnswerToComment_CommentsForProduct_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "CommentsForProduct",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AnswerToComment_CommentId",
+                table: "AnswerToComment",
+                column: "CommentId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -319,6 +434,16 @@ namespace Reshop.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChildCategoryToCategories_ChildCategoryId",
+                table: "ChildCategoryToCategories",
+                column: "ChildCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentsForProduct_ProductId",
+                table: "CommentsForProduct",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
                 column: "OrderId");
@@ -343,10 +468,18 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_ProductToCategories_CategoryId",
                 table: "ProductToCategories",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductToChildCategories_ChildCategoryId",
+                table: "ProductToChildCategories",
+                column: "ChildCategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AnswerToComment");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -363,10 +496,19 @@ namespace Reshop.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ChildCategoryToCategories");
+
+            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "ProductToCategories");
+
+            migrationBuilder.DropTable(
+                name: "ProductToChildCategories");
+
+            migrationBuilder.DropTable(
+                name: "CommentsForProduct");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -376,6 +518,9 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "ChildCategories");
 
             migrationBuilder.DropTable(
                 name: "Products");

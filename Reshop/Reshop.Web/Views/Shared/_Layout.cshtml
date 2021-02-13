@@ -29,10 +29,10 @@
                     @await Html.PartialAsync("Category/DropDown/_CategoriesDropDown")
 
                     <li><a asp-area="AdminPanel" asp-controller="AdminsPanel" asp-action="Index">پنل مدیریت</a></li>
+                    
+                    @await Html.PartialAsync("_LoginPartial")
                 </ul>
             </nav>
-
-
         </div>
     </header>
 

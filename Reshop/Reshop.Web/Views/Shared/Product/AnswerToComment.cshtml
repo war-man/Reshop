@@ -1,0 +1,23 @@
+﻿@model AnswerToComment
+
+<div>
+    <form asp-controller="Product" asp-action="AnswerToComment" method="post" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="FullName" />
+        <input type="hidden" asp-for="CommentId" />
+        <input type="hidden" asp-for="DateTime" />
+
+
+        <div class="form-group">
+            <textarea asp-for="AnswerComment" class="form-control"></textarea>
+            <span asp-validation-for="AnswerComment" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="ارسال نظر" class="btn btn-success" />
+        </div>
+
+    </form>
+</div>

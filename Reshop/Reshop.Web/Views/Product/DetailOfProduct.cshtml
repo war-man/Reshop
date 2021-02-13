@@ -37,6 +37,7 @@
     </form>
 
     @{
+
         var user = await UserManager.FindByIdAsync(Model.UserId);
 
         var addCommentToProduct = new CommentForProduct()
@@ -48,15 +49,11 @@
         };
     }
 
-    @await Html.PartialAsync("Product/AddCommentToProduct",addCommentToProduct)
-    
-    
-    <button type="button" onclick="GetCommentsOfProduct(@Model.Product.Id,20)">مشاهده نظرات</button>
-    
+    @await Html.PartialAsync("Product/AddCommentToProduct", addCommentToProduct)
+
 
     <div id="showComments">
         @await Component.InvokeAsync("ProductComments", new { productId = Model.Product.Id })
-        
     </div>
 </div>
 

@@ -128,3 +128,21 @@ AddChildCategory = form => {
 
     return false; //to prevent default form submit event
 }
+
+
+AddCommentToProduct = form => {
+    $.ajax({
+        method: "POST",
+        url: form.action,
+        data: new FormData(form),
+        contentType: false,
+        processData: false,
+        success: function (res) {
+            if (res.isValid) {
+                $("#showComments").html(res.html);
+            } else {
+                $("#showComments").html(res.html);
+            }
+        }
+    });
+}

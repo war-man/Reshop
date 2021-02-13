@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Models.ProductAndCategory;
 
-namespace Reshop.Domain.Models.ProductAndCategory
+namespace Reshop.Domain.Models.User.Comment
 {
     public class CommentForProduct
     {
@@ -22,6 +25,9 @@ namespace Reshop.Domain.Models.ProductAndCategory
 
         public int Like { get; set; }
 
+        [ForeignKey("ProductId")]
         public Product Product { get; set; }
+
+        public ICollection<AnswerToComment> AnswersToComment { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Reshop.Application.Services.ExtensionMethods;
 using Reshop.Domain.Models.ProductAndCategory;
+using Reshop.Domain.Models.User.Comment;
 using Reshop.Domain.Services.Interfaces.ProductAndCategory;
 using Reshop.Domain.ViewModels.ProductAndCategory.Category;
 using Reshop.Domain.ViewModels.ProductAndCategory.Product;
@@ -338,8 +339,23 @@ namespace Reshop.Infrastructure.Services.Repository.ProductAndCategory
             return await _context.Products
                 .Where(c => c.Id == productId)
                 .SelectMany(c => c.CommentsForProduct)
+                .Include(c=> c.AnswersToComment)
                 .OrderByDescending(c => c.Comment).Take(take).ToListAsync();
 
+        }
+
+        public async Task AnswerToComment(AnswerToComment model)
+        {
+            var answer = new AnswerToComment()
+            {
+                UserId = model.UserId,
+                CommentId = model.CommentId,
+                FullName = model.FullName,
+                DateTime = model.DateTime,
+                AnswerComment = model.AnswerComment,
+            };
+            await _context.AnswerToComments.AddAsync(answer);
+            await _context.SaveChangesAsync();
         }
 
 

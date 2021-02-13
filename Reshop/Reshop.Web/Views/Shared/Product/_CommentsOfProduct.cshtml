@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<CommentForProduct>
+@inject UserManager<User> UserManager;
+
 
 @if (Model != null)
 {
@@ -15,20 +17,31 @@
 
                 لایک : @comment.Like <br />
 
-                @*<a asp-controller="Product" asp-action="LikeTheComment" asp-route-commentId="@comment.CommentId"
-                   class="btn btn-info">
-                    لایک
-                </a>*@
-            </div>
-            @*@{
-                var answer = new AnswerToComment()
-                {
-                    CommentId = comment.CommentId,
-                    ProductId = Model.Product.Id
-                };
-            }
+                پاسخ :
 
-            <partial name="Product/_AnswerToComment" model="answer" />*@
+                @{
+                    var user = await UserManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
+                    var answer = new AnswerToComment()
+                    {
+                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        FullName = user.FullName,
+                        CommentId = comment.Id,
+                        DateTime = DateTime.Now.ToShamsi(),
+                    };
+                }
+
+                <partial name="/Views/Shared/Product/AnswerToComment.cshtml" model="answer" />
+
+                <hr />
+                @foreach (var ans in comment.AnswersToComment)
+                {
+                    <p>@ans.AnswerComment</p>
+                }
+            </div>
+
+
         </div>
     }
 }
